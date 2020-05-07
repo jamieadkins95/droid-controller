@@ -360,7 +360,7 @@ public class BluetoothLeService extends Service {
         Notification notification =
             new Notification.Builder(this, "droid")
                 .setContentTitle("Droid BLE Service")
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_notification_icon)
                 .build();
 
         startForeground(12343, notification);
