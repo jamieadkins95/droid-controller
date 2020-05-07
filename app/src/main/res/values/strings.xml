@@ -34,4 +34,6 @@
     <string name="menu_disconnect">Disconnect</string>
     <string name="menu_scan">Scan</string>
     <string name="menu_stop">Stop</string>
+    <string name="custom_command">Custom Command</string>
+    <string name="send">Send</string>
 </resources>
