@@ -13,7 +13,7 @@ androidExtensions {
 android {
     compileSdkVersion Versions.compile_sdk
     defaultConfig {
-        applicationId "com.jamieadkins.droid"
+        applicationId "com.jamieadkins.droid.controller"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -22,8 +22,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding = true
     }
 }
 
@@ -50,4 +50,5 @@ dependencies {
     implementation Libs.groupie
     implementation Libs.groupie_extensions
     implementation Libs.coil
+    implementation Libs.lottie
 }

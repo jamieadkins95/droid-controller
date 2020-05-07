@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/connect">
+
+    <fragment android:id="@+id/connect"
+        android:label="Connect"
+        android:name="com.jamieadkins.droid.controller.connect.ConnectFragment" />
+
+    <!--<fragment android:id="@+id/bug_profile"
+        android:label="@string/bugs"
+        android:name="com.jamieadkins.acnh.bugs.profile.BugProfileFragment">
+
+        <argument
+            android:name="id"
+            app:argType="string" />
+
+    </fragment>-->
+
+</navigation>

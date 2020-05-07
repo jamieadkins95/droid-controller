@@ -49,6 +49,7 @@ object Libs {
     const val curl = "com.github.mrmike:ok2curl:${Versions.curl}"
     const val groupie = "com.xwray:groupie:${Versions.groupie}"
     const val groupie_extensions = "com.xwray:groupie-kotlin-android-extensions:${Versions.groupie}"
+    const val lottie = "com.airbnb.android:lottie:3.4.0"
 
     // Logging
     const val timber = "com.jakewharton.timber:timber:${Versions.timber}"

@@ -13,7 +13,7 @@
         android:name=".DroidApplication"
         android:icon="@mipmap/ic_launcher"
         android:theme="@style/DroidControllerTheme">
-        <activity android:name=".DeviceControlActivity"
+        <activity android:name=".MainActivity"
             android:label="@string/droid_controller">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

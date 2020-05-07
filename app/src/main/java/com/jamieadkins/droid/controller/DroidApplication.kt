@@ -1,11 +1,20 @@
 package com.jamieadkins.droid.controller
 
 import android.app.Application
+import android.content.Context
+import com.jamieadkins.droid.controller.di.CoreComponent
+import com.jamieadkins.droid.controller.di.DaggerCoreComponent
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import timber.log.Timber
 
 class DroidApplication : Application() {
+
+    private val coreComponent: CoreComponent by lazy {
+        DaggerCoreComponent.builder()
+            .context(context = this)
+            .build()
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -29,5 +38,10 @@ class DroidApplication : Application() {
                 Thread.currentThread().uncaughtExceptionHandler?.uncaughtException(Thread.currentThread(), e)
             }
         }
+    }
+
+    companion object {
+        val Context.coreComponent
+            get() = (applicationContext as DroidApplication).coreComponent
     }
 }
