@@ -2,8 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
+// apply plugin: 'com.google.gms.google-services' TODO Uncomment when firebase is setup
+// apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'androidx.navigation.safeargs'
 
 androidExtensions {
@@ -36,8 +36,8 @@ dependencies {
     implementation Libs.nav_component_fragment
     implementation Libs.nav_component_ui
 
-    implementation Libs.firebase_analytics
-    implementation Libs.firebase_crashlytics
+//    implementation Libs.firebase_analytics TODO Uncomment when firebase is setup
+//    implementation Libs.firebase_crashlytics
 
     implementation Libs.dagger
     implementation Libs.dagger_support

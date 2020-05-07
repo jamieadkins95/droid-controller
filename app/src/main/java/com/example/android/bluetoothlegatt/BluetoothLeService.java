@@ -34,8 +34,9 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import java.util.Base64;
 import java.util.List;
@@ -359,7 +360,7 @@ public class BluetoothLeService extends Service {
         Notification notification =
             new Notification.Builder(this, "droid")
                 .setContentTitle("Droid BLE Service")
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .build();
 
         startForeground(12343, notification);
