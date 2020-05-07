@@ -116,7 +116,7 @@ public class DeviceControlActivity extends AppCompatActivity {
         mSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBluetoothLeService.writeCharacteristic("09b600b1-3e42-41fc-b474-e9c0c8f0c801", mInput.getText().toString());
+                mBluetoothLeService.writeCharacteristic(mInput.getText().toString());
             }
         });
 
