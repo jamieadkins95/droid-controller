@@ -13,7 +13,7 @@ androidExtensions {
 android {
     compileSdkVersion Versions.compile_sdk
     defaultConfig {
-        applicationId "com.jamieadkins.acnh"
+        applicationId "com.jamieadkins.droid"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
