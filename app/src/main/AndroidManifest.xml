@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.android.bluetoothlegatt">
+    package="com.jamieadkins.droid.controller">
 
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
 
@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application android:label="@string/droid_controller"
+        android:name=".DroidApplication"
         android:icon="@mipmap/ic_launcher"
         android:theme="@style/DroidControllerTheme">
         <activity android:name=".DeviceControlActivity"
