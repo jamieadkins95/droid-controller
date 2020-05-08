@@ -5,5 +5,5 @@ fun ByteArray.toHex(): String {
 }
 
 fun String.hexToByteArray(): ByteArray {
-    return chunked(2).map { it.toInt(16).toByte() }.toByteArray()
+    return replace(" ", "").chunked(2).map { it.toInt(16).toByte() }.toByteArray()
 }

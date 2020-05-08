@@ -26,11 +26,12 @@ class DroidBluetoothLeService : Service() {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
             Timber.i("onConnectionStateChange status=$status state=$newState")
             if (newState == BluetoothProfile.STATE_CONNECTED) {
+                binder.connectionStatus.onNext(ConnectionState.ConnectedWithoutHandshake)
                 Timber.i("Connected to GATT server.")
                 Timber.i("Attempting to start service discovery: ${bluetoothGatt?.discoverServices()}")
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 handshakeComplete = false
-                binder.connectionStatus.onNext(false)
+                binder.connectionStatus.onNext(ConnectionState.Disconnected)
                 Timber.i("Disconnected from GATT server.")
             }
         }
@@ -40,7 +41,7 @@ class DroidBluetoothLeService : Service() {
                 if (!handshakeComplete) {
                     performHandshake()
                     handshakeComplete = true
-                    binder.connectionStatus.onNext(true)
+                    binder.connectionStatus.onNext(ConnectionState.Connected)
                 }
             } else {
                 Timber.w("onServicesDiscovered received: $status")
@@ -77,30 +78,6 @@ class DroidBluetoothLeService : Service() {
         super.onDestroy()
         bluetoothGatt?.close()
         bluetoothGatt = null
-    }
-
-    private fun performHandshake() {
-        Timber.i("performHandshake")
-        try {
-            writeCharacteristic("222001")
-            Thread.sleep(50)
-            writeCharacteristic("222001")
-            Thread.sleep(50)
-            writeCharacteristic("222001")
-            Thread.sleep(50)
-            writeCharacteristic("222001")
-            Thread.sleep(50)
-            writeCharacteristic("27420f4444001f00")
-            Thread.sleep(10)
-            writeCharacteristic("27420f4444001802")
-            Thread.sleep(50)
-            writeCharacteristic("27420f4444001f00")
-            Thread.sleep(10)
-            writeCharacteristic("27420f4444001802")
-            Thread.sleep(50)
-        } catch (e: InterruptedException) {
-            e.printStackTrace()
-        }
     }
 
     /**
@@ -144,7 +121,9 @@ class DroidBluetoothLeService : Service() {
         bluetoothGatt?.disconnect()
     }
 
-    fun writeCharacteristic(uuid: String, valueHex: String) {
+    fun sendCommand(droidAction: DroidAction) = writeCharacteristic(droidAction.command)
+
+    private fun writeCharacteristic(uuid: String, valueHex: String) {
         val characteristic = getCharacteristic(uuid)
         if (characteristic != null) {
             characteristic.value = valueHex.hexToByteArray()
@@ -156,12 +135,12 @@ class DroidBluetoothLeService : Service() {
         }
     }
 
-    fun writeCharacteristic(valueHex: String) {
+    private fun writeCharacteristic(valueHex: String) {
         Timber.d("Writing $valueHex")
         writeCharacteristic(WRITE_CHARACTERISTIC_UUID, valueHex)
     }
 
-    fun getCharacteristic(uuid: String?): BluetoothGattCharacteristic? {
+    private fun getCharacteristic(uuid: String?): BluetoothGattCharacteristic? {
         bluetoothGatt?.services?.forEach { service ->
             val characteristic = service.getCharacteristic(UUID.fromString(uuid))
             if (characteristic != null) return characteristic
@@ -169,8 +148,32 @@ class DroidBluetoothLeService : Service() {
         return null
     }
 
+    private fun performHandshake() {
+        Timber.i("performHandshake")
+        try {
+            sendCommand(DroidAction.Handshake)
+            Thread.sleep(50)
+            sendCommand(DroidAction.Handshake)
+            Thread.sleep(50)
+            sendCommand(DroidAction.Handshake)
+            Thread.sleep(50)
+            sendCommand(DroidAction.Handshake)
+            Thread.sleep(50)
+            sendCommand(DroidAction.ResetSound)
+            Thread.sleep(10)
+            sendCommand(DroidAction.PlaySound)
+            Thread.sleep(50)
+            sendCommand(DroidAction.ResetSound)
+            Thread.sleep(10)
+            sendCommand(DroidAction.PlaySound)
+            Thread.sleep(50)
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+    }
+
     inner class DroidServiceBinder : Binder() {
         val service: DroidBluetoothLeService = this@DroidBluetoothLeService
-        val connectionStatus = BehaviorSubject.createDefault(false)
+        val connectionStatus: BehaviorSubject<ConnectionState> = BehaviorSubject.createDefault(ConnectionState.Disconnected)
     }
 }
