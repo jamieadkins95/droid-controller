@@ -105,8 +105,8 @@ public class DeviceControlActivity extends AppCompatActivity {
         setContentView(R.layout.gatt_services_characteristics);
 
         final Intent intent = getIntent();
-        mDeviceName = "Droid"; // intent.getStringExtra(EXTRAS_DEVICE_NAME);
-        mDeviceAddress = "DE:84:98:66:34:63"; // intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+        mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
+        mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
 
         // Sets up UI references.
         ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
@@ -120,8 +120,6 @@ public class DeviceControlActivity extends AppCompatActivity {
             }
         });
 
-        getSupportActionBar().setTitle(mDeviceName);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         startService(gattServiceIntent);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);

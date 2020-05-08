@@ -21,6 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".DeviceScanActivity"/>
+        <activity android:name=".DeviceControlActivity"/>
         <service android:name=".BluetoothLeService" android:enabled="true"/>
     </application>
 

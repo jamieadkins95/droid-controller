@@ -9,7 +9,7 @@ import io.reactivex.Observable
 import timber.log.Timber
 import javax.inject.Inject
 
-class BleScanner @Inject constructor(private val scanner: BluetoothLeScanner) {
+class BleScanner @Inject constructor(private val scanner: BluetoothLeScanner?) {
 
     fun scan(): Observable<ScanState> {
         return Observable.create { emitter ->
@@ -30,11 +30,11 @@ class BleScanner @Inject constructor(private val scanner: BluetoothLeScanner) {
             val filters = listOf(
                 ScanFilter.Builder().setDeviceName("DROID").build()
             )
-            val settings = ScanSettings.Builder().setCallbackType(ScanSettings.CALLBACK_TYPE_FIRST_MATCH).build()
-            scanner.startScan(filters, settings, scanCallback)
+            val settings = ScanSettings.Builder().build()
+            scanner?.startScan(filters, settings, scanCallback) ?: emitter.onNext(ScanState.ScanFailed)
             emitter.onNext(ScanState.Scanning)
 
-            emitter.setCancellable { scanner.stopScan(scanCallback) }
+            emitter.setCancellable { scanner?.stopScan(scanCallback) }
         }
     }
 }

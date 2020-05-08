@@ -19,13 +19,10 @@ abstract class ConnectModule {
     companion object {
 
         @Provides
-        fun adapter(@ApplicationContext context: Context): BluetoothAdapter {
-            // This shouldn't be null because we require bluetooth as a feature. Maybe we should deal with this more gracefully?
-            return ContextCompat.getSystemService(context, BluetoothManager::class.java)!!.adapter
-        }
+        fun adapter(): BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
         @Provides
-        fun bleScanner(adapter: BluetoothAdapter): BluetoothLeScanner = adapter.bluetoothLeScanner
+        fun bleScanner(adapter: BluetoothAdapter?): BluetoothLeScanner? = adapter?.bluetoothLeScanner
     }
 
 }

@@ -34,15 +34,66 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/status"
-            android:layout_width="0dp"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/scan"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:text="@string/scan_for_droids"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/animation_view"
-            android:text="Scanning" />
+            app:layout_constraintTop_toBottomOf="@id/animation_view" />
+
+        <com.jamieadkins.droid.controller.connect.ScanErrorView
+            android:id="@+id/bluetooth_error"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/scan" />
+
+        <com.jamieadkins.droid.controller.connect.ScanErrorView
+            android:id="@+id/location_error"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bluetooth_error" />
+
+        <ImageView
+            android:id="@+id/location_info"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:srcCompat="@drawable/ic_info_24"
+            android:layout_marginStart="24dp"
+            android:tint="?colorOnSurface"
+            android:alpha="0.6"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintEnd_toStartOf="@id/location_info_text"
+            app:layout_constraintTop_toTopOf="@id/location_info_text"
+            app:layout_constraintBottom_toBottomOf="@id/location_info_text"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/location_info_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="?colorOnSurface"
+            android:alpha="0.6"
+            android:text="@string/connection_hint"
+            android:layout_marginBottom="24dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/location_info"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
