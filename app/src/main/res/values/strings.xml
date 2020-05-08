@@ -48,4 +48,5 @@
     <string name="menu_stop">Stop</string>
     <string name="custom_command">Custom Command</string>
     <string name="send">Send</string>
+    <string name="identify">Identify</string>
 </resources>

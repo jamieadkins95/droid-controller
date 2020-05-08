@@ -14,7 +14,7 @@ import io.reactivex.subjects.BehaviorSubject
 import timber.log.Timber
 import java.util.UUID
 
-class DroidBluetoothLeService : Service() {
+class DroidBluetoothLeService : Service(), DroidService {
     private var bluetoothAdapter: BluetoothAdapter? = null
     private var bluetoothGatt: BluetoothGatt? = null
     private var handshakeComplete = false
@@ -89,7 +89,7 @@ class DroidBluetoothLeService : Service() {
      * `BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)`
      * callback.
      */
-    fun connect(address: String): Boolean {
+    override fun connect(address: String): Boolean {
         if (bluetoothAdapter == null) {
             Timber.w("BluetoothAdapter not initialized or unspecified address.")
             return false
@@ -117,11 +117,11 @@ class DroidBluetoothLeService : Service() {
      * `BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)`
      * callback.
      */
-    fun disconnect() {
+    override fun disconnect() {
         bluetoothGatt?.disconnect()
     }
 
-    fun sendCommand(droidAction: DroidAction) = writeCharacteristic(droidAction.command)
+    override fun sendCommand(droidAction: DroidAction) = writeCharacteristic(droidAction.command)
 
     private fun writeCharacteristic(uuid: String, valueHex: String) {
         val characteristic = getCharacteristic(uuid)
@@ -172,8 +172,7 @@ class DroidBluetoothLeService : Service() {
         }
     }
 
-    inner class DroidServiceBinder : Binder() {
-        val service: DroidBluetoothLeService = this@DroidBluetoothLeService
+    inner class DroidServiceBinder : Binder(), DroidService by this@DroidBluetoothLeService {
         val connectionStatus: BehaviorSubject<ConnectionState> = BehaviorSubject.createDefault(ConnectionState.Disconnected)
     }
 }

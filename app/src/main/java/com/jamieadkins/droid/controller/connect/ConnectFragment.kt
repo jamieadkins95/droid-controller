@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.findNavController
 import com.jamieadkins.droid.controller.DeviceControlActivity
 import com.jamieadkins.droid.controller.R
 import com.jamieadkins.droid.controller.databinding.FragmentConnectBinding
@@ -98,9 +99,6 @@ class ConnectFragment : DaggerFragment(), ConnectContract.View {
     }
 
     override fun connectToDroid(address: String) {
-        val intent = Intent(requireActivity(), DeviceControlActivity::class.java)
-        intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_NAME, "DROID")
-        intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_ADDRESS, address)
-        startActivity(intent)
+        findNavController().navigate(ConnectFragmentDirections.toControls(address))
     }
 }

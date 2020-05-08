@@ -18,16 +18,24 @@
 
     <fragment android:id="@+id/connect"
         android:label="Connect"
-        android:name="com.jamieadkins.droid.controller.connect.ConnectFragment" />
+        android:name="com.jamieadkins.droid.controller.connect.ConnectFragment">
 
-    <!--<fragment android:id="@+id/bug_profile"
-        android:label="@string/bugs"
-        android:name="com.jamieadkins.acnh.bugs.profile.BugProfileFragment">
+        <action
+            android:id="@+id/to_controls"
+            app:destination="@id/controls"
+            app:popUpTo="@id/setup"
+            app:popUpToInclusive="true"/>
+
+    </fragment>
+
+    <fragment android:id="@+id/controls"
+        android:label="Controls"
+        android:name="com.jamieadkins.droid.controller.controls.ControlsFragment">
 
         <argument
-            android:name="id"
+            android:name="address"
             app:argType="string" />
 
-    </fragment>-->
+    </fragment>
 
 </navigation>
