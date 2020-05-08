@@ -23,6 +23,59 @@
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
+        <TextView
+            android:id="@+id/volume_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/volume"
+            android:layout_marginStart="12dp"
+            android:textAppearance="?textAppearanceBody1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/volume"
+            app:layout_constraintBottom_toBottomOf="@id/volume" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/volume"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:valueFrom="0"
+            android:valueTo="31"
+            android:value="31"
+            android:stepSize="1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/slider_barrier"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/speed_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/speed"
+            android:layout_marginStart="12dp"
+            android:textAppearance="?textAppearanceBody1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/speed"
+            app:layout_constraintBottom_toBottomOf="@id/speed" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/speed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:valueFrom="0"
+            android:valueTo="255"
+            android:value="255"
+            android:stepSize="1"
+            app:layout_constraintTop_toBottomOf="@id/volume"
+            app:layout_constraintStart_toEndOf="@id/slider_barrier"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/slider_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="speed_text,volume_text"
+            app:barrierDirection="end" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/identify"
             android:layout_width="wrap_content"
@@ -31,7 +84,7 @@
             android:layout_margin="12dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/speed" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/blaster"
@@ -42,6 +95,50 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/identify" />
+
+        <ImageButton
+            android:id="@+id/forward"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:backgroundTint="@color/primaryLightColor"
+            android:src="@drawable/ic_up_48"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@id/backwards"
+            app:layout_constraintStart_toStartOf="@id/backwards"
+            app:layout_constraintEnd_toEndOf="@id/backwards" />
+
+        <ImageButton
+            android:id="@+id/backwards"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:backgroundTint="@color/primaryLightColor"
+            android:src="@drawable/ic_down_48"
+            android:layout_marginBottom="48dp"
+            android:layout_marginStart="48dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/left"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:backgroundTint="@color/primaryLightColor"
+            android:src="@drawable/ic_left_48"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintBottom_toBottomOf="@id/backwards"
+            app:layout_constraintTop_toTopOf="@id/forward"
+            app:layout_constraintEnd_toStartOf="@id/right"/>
+
+        <ImageButton
+            android:id="@+id/right"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:backgroundTint="@color/primaryLightColor"
+            android:src="@drawable/ic_right_48"
+            android:layout_marginEnd="48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/left"
+            app:layout_constraintTop_toTopOf="@id/left" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

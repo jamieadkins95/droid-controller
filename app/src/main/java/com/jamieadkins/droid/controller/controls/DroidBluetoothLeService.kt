@@ -9,16 +9,24 @@ import android.bluetooth.BluetoothProfile
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import com.jamieadkins.droid.controller.addToComposite
 import com.jamieadkins.droid.controller.controls.BluetoothConstants.WRITE_CHARACTERISTIC_UUID
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import timber.log.Timber
 import java.util.UUID
+import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.TimeUnit
 
 class DroidBluetoothLeService : Service(), DroidService {
     private var bluetoothAdapter: BluetoothAdapter? = null
     private var bluetoothGatt: BluetoothGatt? = null
     private var handshakeComplete = false
     private val binder = DroidServiceBinder()
+
+    private val commands = ConcurrentLinkedQueue<String>()
+    private val compositeDisposable = CompositeDisposable()
 
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
@@ -70,6 +78,9 @@ class DroidBluetoothLeService : Service(), DroidService {
     override fun onCreate() {
         super.onCreate()
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        Observable.interval(5, TimeUnit.MILLISECONDS)
+            .subscribe { commands.poll()?.let(::writeCharacteristic) }
+            .addToComposite(compositeDisposable)
     }
 
     override fun onBind(intent: Intent): IBinder? = binder
@@ -78,6 +89,7 @@ class DroidBluetoothLeService : Service(), DroidService {
         super.onDestroy()
         bluetoothGatt?.close()
         bluetoothGatt = null
+        compositeDisposable.clear()
     }
 
     /**
@@ -121,7 +133,9 @@ class DroidBluetoothLeService : Service(), DroidService {
         bluetoothGatt?.disconnect()
     }
 
-    override fun sendCommand(droidAction: DroidAction) = writeCharacteristic(droidAction.command)
+    override fun sendCommand(droidAction: DroidAction) {
+        droidAction.commands.forEach { commands.add(it) }
+    }
 
     private fun writeCharacteristic(uuid: String, valueHex: String) {
         val characteristic = getCharacteristic(uuid)

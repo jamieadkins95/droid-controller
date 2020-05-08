@@ -3,7 +3,9 @@ package com.jamieadkins.droid.controller.controls
 /**
  * command is hex representation
  */
-sealed class DroidAction(val command: String) {
+sealed class DroidAction(val commands: List<String>) {
+
+    constructor(command: String) : this(listOf(command))
 
     object Handshake : DroidAction("22 20 01")
 
@@ -27,10 +29,14 @@ sealed class DroidAction(val command: String) {
     /**
      * set volume, last byte controls value of volume, 00 - 0x1f
      */
-    data class Volume(val volume: Int) : DroidAction("27 42 0f 44 44 00 0e %s".format(Integer.toHexString(volume)))
+    data class Volume(val volume: Int) : DroidAction("27 42 0f 44 44 00 0e %s".format(volume.to2DigitHexString()))
 
     object MinVolume : DroidAction("27 42 0f 44 44 00 0e 00")
 
     object MaxVolume : DroidAction("27 42 0f 44 44 00 0e 1f")
+
+    data class Forward(val power: Int) : DroidAction(listOf("2942 0546 01${power.to2DigitHexString()} 012C 0000", "2942 0546 00${power.to2DigitHexString()} 012C 0000"))
+
+    data class Backwards(val power: Int) : DroidAction(listOf("2942 0546 81${power.to2DigitHexString()} 012C 0000", "2942 0546 80${power.to2DigitHexString()} 012C 0000"))
 
 }

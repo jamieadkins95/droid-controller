@@ -7,3 +7,5 @@ fun ByteArray.toHex(): String {
 fun String.hexToByteArray(): ByteArray {
     return replace(" ", "").chunked(2).map { it.toInt(16).toByte() }.toByteArray()
 }
+
+fun Int.to2DigitHexString(): String = String.format("%02X", this)
