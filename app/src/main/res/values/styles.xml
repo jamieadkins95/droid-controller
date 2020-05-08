@@ -3,11 +3,12 @@
     <style name="DroidControllerTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorPrimaryVariant">@color/primaryLightColor</item>
         <item name="colorAccent">@color/secondaryColor</item>
         <item name="colorSecondary">@color/secondaryColor</item>
         <item name="colorSurface">@color/surfaceColor</item>
         <item name="android:colorBackground">@color/white</item>
-        <item name="colorOnPrimary">@color/primaryTextColor</item>
+        <item name="colorOnPrimary">@color/white</item>
         <item name="colorOnSecondary">@color/primaryTextColor</item>
         <item name="colorOnSurface">@color/primaryTextColor</item>
         <item name="android:textColorPrimary">@color/primaryTextColor</item>

@@ -1,14 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 // apply plugin: 'com.google.gms.google-services' TODO Uncomment when firebase is setup
 // apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'androidx.navigation.safeargs'
-
-androidExtensions {
-    experimental = true
-}
 
 android {
     compileSdkVersion Versions.compile_sdk
@@ -32,6 +27,8 @@ dependencies {
     implementation Libs.androidx_appcompat
     implementation Libs.androidx_constraint_layout
     implementation Libs.androidx_core
+    implementation Libs.androidx_activity
+    implementation Libs.androidx_fragment
     implementation Libs.material_design
     implementation Libs.nav_component_fragment
     implementation Libs.nav_component_ui

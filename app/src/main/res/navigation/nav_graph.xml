@@ -2,7 +2,19 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/connect">
+    app:startDestination="@id/setup">
+
+    <fragment android:id="@+id/setup"
+        android:label="Setup"
+        android:name="com.jamieadkins.droid.controller.setup.SetupFragment">
+
+        <action
+            android:id="@+id/setup_to_connect"
+            app:destination="@id/connect"
+            app:popUpTo="@id/setup"
+            app:popUpToInclusive="true" />
+
+    </fragment>
 
     <fragment android:id="@+id/connect"
         android:label="Connect"

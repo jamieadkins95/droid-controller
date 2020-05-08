@@ -29,6 +29,12 @@
     <string name="unknown_characteristic">Unknown characteristic</string>
     <string name="unknown_service">Unknown service</string>
 
+    <string name="enable_bluetooth">Enable Bluetooth</string>
+    <string name="bt_reason">Bluetooth needs to be enabled to connect to the Droid.</string>
+    <string name="grant_location">enable location</string>
+    <string name="permissions_settings">Location Permission Settings</string>
+    <string name="permission_reason">Android also requires us to ask for the location permission when dealing with bluetooth. This app does not actually fetch your location.</string>
+
     <!-- Menu items -->
     <string name="menu_connect">Connect</string>
     <string name="menu_disconnect">Disconnect</string>
