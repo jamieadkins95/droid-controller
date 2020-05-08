@@ -13,7 +13,7 @@ sealed class DroidAction(val command: String) {
 
     object PlaySound : DroidAction("27 42 0f 44 44 00 18 00")
 
-    object Identify : DroidAction("")
+    object Identify : DroidAction("27 42 0f 44 44 00 18 02")
 
     /**
      * execute pre-programmed script X where X is specified by second-to-last byte

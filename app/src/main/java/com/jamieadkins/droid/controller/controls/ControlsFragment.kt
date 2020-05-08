@@ -11,8 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.navArgs
+import com.jamieadkins.droid.controller.BluetoothLeService
 import com.jamieadkins.droid.controller.databinding.FragmentControlsBinding
 import dagger.android.support.DaggerFragment
+import timber.log.Timber
 
 class ControlsFragment : DaggerFragment() {
 
@@ -50,6 +52,7 @@ class ControlsFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding?.toolbar?.let { (activity as? AppCompatActivity)?.setSupportActionBar(it) }
         binding?.identify?.setOnClickListener { droidService?.sendCommand(DroidAction.Identify) }
+        binding?.blaster?.setOnClickListener { droidService?.sendCommand(DroidAction.BlasterSound); droidService?.sendCommand(DroidAction.PlaySound); }
     }
 
     override fun onDestroyView() {
