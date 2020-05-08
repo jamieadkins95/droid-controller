@@ -121,7 +121,6 @@ public class DeviceControlActivity extends AppCompatActivity {
         });
 
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
-        startService(gattServiceIntent);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
     }
 

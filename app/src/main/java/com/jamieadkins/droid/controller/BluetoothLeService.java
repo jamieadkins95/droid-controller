@@ -373,33 +373,6 @@ public class BluetoothLeService extends Service {
     }
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-
-        createNotificationChannel();
-        Notification notification =
-            new Notification.Builder(this, "droid")
-                .setContentTitle("Droid BLE Service")
-                .setSmallIcon(R.drawable.ic_notification_icon)
-                .build();
-
-        startForeground(12343, notification);
-    }
-
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("droid", "Droid BLE Service", importance);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         close();
