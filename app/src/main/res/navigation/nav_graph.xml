@@ -23,7 +23,7 @@
         <action
             android:id="@+id/to_controls"
             app:destination="@id/controls"
-            app:popUpTo="@id/setup"
+            app:popUpTo="@id/connect"
             app:popUpToInclusive="true"/>
 
     </fragment>
