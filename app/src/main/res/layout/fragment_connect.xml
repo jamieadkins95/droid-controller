@@ -67,7 +67,7 @@
             app:layout_constraintTop_toBottomOf="@id/bluetooth_error" />
 
         <ImageView
-            android:id="@+id/location_info"
+            android:id="@+id/info2"
             android:layout_width="24dp"
             android:layout_height="24dp"
             app:srcCompat="@drawable/ic_info_24"
@@ -75,13 +75,42 @@
             android:tint="?colorOnSurface"
             android:alpha="0.6"
             app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintEnd_toStartOf="@id/location_info_text"
-            app:layout_constraintTop_toTopOf="@id/location_info_text"
-            app:layout_constraintBottom_toBottomOf="@id/location_info_text"
+            app:layout_constraintEnd_toStartOf="@id/timeout_info"
+            app:layout_constraintTop_toTopOf="@id/timeout_info"
+            app:layout_constraintBottom_toBottomOf="@id/timeout_info"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/location_info_text"
+            android:id="@+id/timeout_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="?colorOnSurface"
+            android:alpha="0.6"
+            android:text="@string/timeout_info"
+            android:layout_marginBottom="12dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintBottom_toTopOf="@id/info_text"
+            app:layout_constraintStart_toEndOf="@id/info2"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/info1"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:srcCompat="@drawable/ic_info_24"
+            android:layout_marginStart="24dp"
+            android:tint="?colorOnSurface"
+            android:alpha="0.6"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintEnd_toStartOf="@id/info_text"
+            app:layout_constraintTop_toTopOf="@id/info_text"
+            app:layout_constraintBottom_toBottomOf="@id/info_text"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/info_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="?colorOnSurface"
@@ -92,7 +121,7 @@
             android:layout_marginEnd="24dp"
             app:layout_constraintVertical_bias="0"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/location_info"
+            app:layout_constraintStart_toEndOf="@id/info1"
             app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
