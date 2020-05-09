@@ -50,4 +50,7 @@
     <string name="blaster">Blaster</string>
     <string name="volume">Volume</string>
     <string name="speed">Speed</string>
+    <string name="controls">Controls</string>
+    <string name="joystick">Joystick</string>
+    <string name="buttons">Buttons</string>
 </resources>
