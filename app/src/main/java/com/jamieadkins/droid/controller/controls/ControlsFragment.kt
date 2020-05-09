@@ -74,32 +74,22 @@ class ControlsFragment : DaggerFragment() {
         }
         binding?.volume?.addOnChangeListener { _, value, _ -> droidService?.sendCommand(DroidAction.Volume(value.toInt())) }
         binding?.forward?.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> droidService?.sendCommand(DroidAction.Forward(binding?.speed?.value?.toInt() ?: 0))
-                MotionEvent.ACTION_UP -> droidService?.sendCommand(DroidAction.Forward(0))
-            }
-            true
+            onButtonTouch(event, DroidAction.Forward(binding?.speed?.value?.toInt() ?: 0), DroidAction.Forward(0))
         }
         binding?.backwards?.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> droidService?.sendCommand(DroidAction.Backwards(binding?.speed?.value?.toInt() ?: 0))
-                MotionEvent.ACTION_UP -> droidService?.sendCommand(DroidAction.Backwards(0))
-            }
-            true
+            onButtonTouch(event, DroidAction.Backwards(binding?.speed?.value?.toInt() ?: 0), DroidAction.Backwards(0))
         }
         binding?.headLeft?.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> droidService?.sendCommand(DroidAction.HeadLeft(binding?.speed?.value?.toInt() ?: 0))
-                MotionEvent.ACTION_UP -> droidService?.sendCommand(DroidAction.HeadLeft(0))
-            }
-            true
+            onButtonTouch(event, DroidAction.HeadLeft(binding?.speed?.value?.toInt() ?: 0), DroidAction.HeadLeft(0))
         }
         binding?.headRight?.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> droidService?.sendCommand(DroidAction.HeadRight(binding?.speed?.value?.toInt() ?: 0))
-                MotionEvent.ACTION_UP -> droidService?.sendCommand(DroidAction.HeadRight(0))
-            }
-            true
+            onButtonTouch(event, DroidAction.HeadRight(binding?.speed?.value?.toInt() ?: 0), DroidAction.HeadRight(0))
+        }
+        binding?.left?.setOnTouchListener { _, event ->
+            onButtonTouch(event, DroidAction.Left(binding?.speed?.value?.toInt() ?: 0), DroidAction.Left(0))
+        }
+        binding?.right?.setOnTouchListener { _, event ->
+            onButtonTouch(event, DroidAction.Right(binding?.speed?.value?.toInt() ?: 0), DroidAction.Right(0))
         }
 
         joystickConstraints.clone(binding?.constraintLayout)
@@ -139,5 +129,13 @@ class ControlsFragment : DaggerFragment() {
         set.connect(R.id.head_left, ConstraintSet.BOTTOM, R.id.forward, ConstraintSet.BOTTOM)
         set.setVisibility(R.id.button_controls, View.VISIBLE)
         set.setVisibility(R.id.joystick, View.GONE)
+    }
+
+    private fun onButtonTouch(event: MotionEvent, downAction: DroidAction, upAction: DroidAction): Boolean {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> droidService?.sendCommand(downAction)
+            MotionEvent.ACTION_UP -> droidService?.sendCommand(upAction)
+        }
+        return true
     }
 }
