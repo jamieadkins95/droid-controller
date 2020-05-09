@@ -17,14 +17,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.navigation.fragment.navArgs
 import com.jamieadkins.droid.controller.R
+import com.jamieadkins.droid.controller.addToComposite
 import com.jamieadkins.droid.controller.databinding.FragmentControlsBinding
 import dagger.android.support.DaggerFragment
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
 class ControlsFragment : DaggerFragment() {
 
     private val args: ControlsFragmentArgs by navArgs()
     private var binding: FragmentControlsBinding? = null
     private var droidService: DroidBluetoothLeService.DroidServiceBinder? = null
+    private var compositeDisposable = CompositeDisposable()
 
     private val joystickConstraints = ConstraintSet()
     private val buttonsConstraints = ConstraintSet()
@@ -38,12 +42,34 @@ class ControlsFragment : DaggerFragment() {
         override fun onServiceConnected(componentName: ComponentName, service: IBinder) {
             droidService = service as DroidBluetoothLeService.DroidServiceBinder
 
-            // Automatically connects to the device upon successful start-up initialization.
+            droidService?.connectionStatus
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe { state ->
+                    binding?.connect?.apply {
+                        when (state) {
+                            ConnectionState.Disconnected -> {
+                                setText(R.string.connect)
+                                isEnabled = true
+                            }
+                            ConnectionState.ConnectedWithoutHandshake -> {
+                                setText(R.string.connecting)
+                                isEnabled = false
+                            }
+                            ConnectionState.Connected -> {
+                                setText(R.string.connected)
+                                isEnabled = false
+                            }
+                        }
+                    }
+                }
+                ?.addToComposite(compositeDisposable)
+
             droidService?.connect(args.address)
         }
 
         override fun onServiceDisconnected(componentName: ComponentName) {
             droidService = null
+            compositeDisposable.clear()
         }
     }
 

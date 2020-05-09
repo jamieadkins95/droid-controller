@@ -38,8 +38,6 @@
     <string name="permission_reason">Android also requires us to ask for the location permission when dealing with bluetooth. This app does not actually fetch your location.</string>
     <string name="location_error">We need the location permission to search for bluetooth devices. (But we don\'t actually fetch your location.)</string>
     <string name="connection_hint">The Droid can only have one active connection at a time. Make sure that your controller is off and the Droid Depot app is closed.</string>
-    <string name="menu_connect">Connect</string>
-    <string name="menu_disconnect">Disconnect</string>
     <string name="scan">Scan</string>
     <string name="scan_for_droids">Scan For Droids</string>
     <string name="scanning">Scanning</string>
@@ -53,4 +51,8 @@
     <string name="controls">Controls</string>
     <string name="joystick">Joystick</string>
     <string name="buttons">Buttons</string>
+    <string name="connection">Connection</string>
+    <string name="connect">Connect</string>
+    <string name="connecting">Connecting</string>
+    <string name="disconnect">Disconnect</string>
 </resources>

@@ -19,11 +19,11 @@
           android:orderInCategory="1"
           android:showAsAction="ifRoom"/>
     <item android:id="@+id/menu_connect"
-          android:title="@string/menu_connect"
+          android:title="@string/connect"
           android:orderInCategory="100"
           android:showAsAction="ifRoom|withText"/>
     <item android:id="@+id/menu_disconnect"
-          android:title="@string/menu_disconnect"
+          android:title="@string/disconnect"
           android:orderInCategory="101"
           android:showAsAction="ifRoom|withText"/>
 </menu>
