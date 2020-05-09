@@ -26,14 +26,15 @@
             <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/menu_joystick"
-                    android:checked="true"
-                    android:orderInCategory="1"
+                    android:orderInCategory="2"
+                    android:enabled="false"
                     android:title="@string/joystick"
                     app:showAsAction="ifRoom" />
 
                 <item
                     android:id="@+id/menu_buttons"
-                    android:orderInCategory="2"
+                    android:checked="true"
+                    android:orderInCategory="1"
                     android:title="@string/buttons"
                     app:showAsAction="ifRoom" />
             </group>

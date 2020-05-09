@@ -119,6 +119,8 @@ class ControlsFragment : DaggerFragment() {
         joystickConstraints.clone(binding?.constraintLayout)
         buttonsConstraints.clone(binding?.constraintLayout)
         setupButtonConstraints(buttonsConstraints)
+        // Show button controls by default for now. Joystick is WIP
+        binding?.constraintLayout?.let(buttonsConstraints::applyTo)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
