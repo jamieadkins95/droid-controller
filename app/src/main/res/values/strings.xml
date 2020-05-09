@@ -53,6 +53,7 @@
     <string name="controls">Controls</string>
     <string name="joystick">Joystick (Coming Soon)</string>
     <string name="buttons">Buttons</string>
+    <string name="advanced">Advanced</string>
     <string name="connection">Connection</string>
     <string name="connect">Connect</string>
     <string name="connecting">Connecting</string>

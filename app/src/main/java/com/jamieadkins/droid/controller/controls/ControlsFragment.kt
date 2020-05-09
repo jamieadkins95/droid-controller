@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.jamieadkins.droid.controller.R
 import com.jamieadkins.droid.controller.databinding.FragmentControlsBinding
 import dagger.android.support.DaggerFragment
@@ -104,6 +105,11 @@ class ControlsFragment : DaggerFragment() {
             R.id.menu_buttons -> {
                 item.isChecked = !item.isChecked
                 binding?.constraintLayout?.let(buttonsConstraints::applyTo)
+                true
+            }
+            R.id.menu_advanced -> {
+                val dialog = AdvancedControlsFragment()
+                dialog.show(requireActivity().supportFragmentManager, "advanced")
                 true
             }
             else -> super.onOptionsItemSelected(item)
