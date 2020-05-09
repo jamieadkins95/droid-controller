@@ -39,4 +39,8 @@ sealed class DroidAction(val commands: List<String>) {
 
     data class Backwards(val power: Int) : DroidAction(listOf("2942 0546 81${power.to2DigitHexString()} 012C 0000", "2942 0546 80${power.to2DigitHexString()} 012C 0000"))
 
+    data class HeadLeft(val power: Int) : DroidAction("2942 0546 02${power.to2DigitHexString()} 012C 0000")
+
+    data class HeadRight(val power: Int) : DroidAction("2942 0546 82${power.to2DigitHexString()} 012C 0000")
+
 }

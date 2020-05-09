@@ -67,6 +67,20 @@ class ControlsFragment : DaggerFragment() {
             }
             true
         }
+        binding?.headLeft?.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> droidService?.sendCommand(DroidAction.HeadLeft(binding?.speed?.value?.toInt() ?: 0))
+                MotionEvent.ACTION_UP -> droidService?.sendCommand(DroidAction.HeadLeft(0))
+            }
+            true
+        }
+        binding?.headRight?.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> droidService?.sendCommand(DroidAction.HeadRight(binding?.speed?.value?.toInt() ?: 0))
+                MotionEvent.ACTION_UP -> droidService?.sendCommand(DroidAction.HeadRight(0))
+            }
+            true
+        }
     }
 
     override fun onDestroyView() {
