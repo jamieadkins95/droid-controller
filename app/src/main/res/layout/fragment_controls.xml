@@ -99,31 +99,109 @@
             app:constraint_referenced_ids="speed_text,volume_text"
             app:barrierDirection="end" />
 
+        <TextView
+            android:id="@+id/sound_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sounds"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:textAppearance="?textAppearanceBody1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/speed" />
+
+        <androidx.constraintlayout.helper.widget.Flow
+            android:id="@+id/sound_buttons"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sound_text"
+            app:layout_constraintBottom_toTopOf="@id/controls_top"
+            app:constraint_referenced_ids="identify,blaster,reaction1,reaction2,reaction3,reaction4,reaction5,reaction6,reaction7,reaction8"
+            app:flow_verticalBias="0"
+            app:flow_verticalStyle="packed"
+            app:flow_verticalGap="8dp"
+            app:flow_wrapMode="aligned"
+            app:flow_horizontalAlign="start"
+            app:flow_verticalAlign="top"/>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/identify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/identify"
-            android:layout_margin="12dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/speed" />
+            android:text="@string/identify" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/blaster"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/blaster"
-            android:layout_margin="12dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/identify" />
+            android:text="@string/blaster" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/reaction1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reaction1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/reaction2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reaction2" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/reaction3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reaction3" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/reaction4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reaction4" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/reaction5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reaction5" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/reaction6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reaction6" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/reaction7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reaction7" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/reaction8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reaction8" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/controls_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="top"
+            app:constraint_referenced_ids="joystick,forward" />
 
         <io.github.controlwear.virtual.joystick.android.JoystickView
             android:id="@+id/joystick"
             android:layout_width="192dp"
             android:layout_height="192dp"
             android:layout_marginBottom="32dp"
+            android:visibility="gone"
+            tools:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:JV_backgroundColor="?colorSecondary"

@@ -26,7 +26,7 @@ sealed class DroidAction(val commands: List<String>) {
      * 17-18 are delays followed by pairing noise
      * 25 00 0c 42 01 02
      */
-    data class Sequence(val number: String) : DroidAction("25 00 0c 42 %s 02".format(number))
+    data class Reaction(val number: Int) : DroidAction("25 00 0c 42 %s 02".format(number.to2DigitHexString()))
 
     /**
      * set volume, last byte controls value of volume, 00 - 0x1f

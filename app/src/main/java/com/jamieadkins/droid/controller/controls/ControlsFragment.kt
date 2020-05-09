@@ -93,9 +93,15 @@ class ControlsFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding?.toolbar?.let { (activity as? AppCompatActivity)?.setSupportActionBar(it) }
         binding?.identify?.setOnClickListener { droidService?.sendCommand(DroidAction.Identify) }
-        binding?.blaster?.setOnClickListener {
-            droidService?.sendCommand(DroidAction.BlasterSound)
-        }
+        binding?.blaster?.setOnClickListener { droidService?.sendCommand(DroidAction.BlasterSound) }
+        binding?.reaction1?.setOnClickListener { droidService?.sendCommand(DroidAction.Reaction(1)) }
+        binding?.reaction2?.setOnClickListener { droidService?.sendCommand(DroidAction.Reaction(2)) }
+        binding?.reaction3?.setOnClickListener { droidService?.sendCommand(DroidAction.Reaction(3)) }
+        binding?.reaction4?.setOnClickListener { droidService?.sendCommand(DroidAction.Reaction(4)) }
+        binding?.reaction5?.setOnClickListener { droidService?.sendCommand(DroidAction.Reaction(5)) }
+        binding?.reaction6?.setOnClickListener { droidService?.sendCommand(DroidAction.Reaction(6)) }
+        binding?.reaction7?.setOnClickListener { droidService?.sendCommand(DroidAction.Reaction(7)) }
+        binding?.reaction8?.setOnClickListener { droidService?.sendCommand(DroidAction.Reaction(8)) }
         binding?.volume?.addOnChangeListener { _, value, _ -> droidService?.sendCommand(DroidAction.Volume(value.toInt())) }
         binding?.forward?.setOnTouchListener { _, event ->
             onButtonTouch(event, DroidAction.Forward(binding?.speed?.value?.toInt() ?: 0), DroidAction.Forward(0))

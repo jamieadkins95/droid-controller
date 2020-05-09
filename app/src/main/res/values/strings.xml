@@ -48,6 +48,7 @@
     <string name="blaster">Blaster</string>
     <string name="volume">Volume</string>
     <string name="speed">Speed</string>
+    <string name="sounds">Sounds</string>
     <string name="controls">Controls</string>
     <string name="joystick">Joystick (Coming Soon)</string>
     <string name="buttons">Buttons</string>
@@ -55,4 +56,12 @@
     <string name="connect">Connect</string>
     <string name="connecting">Connecting</string>
     <string name="disconnect">Disconnect</string>
+    <string name="reaction1">Reaction 1</string>
+    <string name="reaction2">Reaction 2</string>
+    <string name="reaction3">Reaction 3</string>
+    <string name="reaction4">Reaction 4</string>
+    <string name="reaction5">Reaction 5</string>
+    <string name="reaction6">Reaction 6</string>
+    <string name="reaction7">Reaction 7</string>
+    <string name="reaction8">Reaction 8</string>
 </resources>
