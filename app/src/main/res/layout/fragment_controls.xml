@@ -96,6 +96,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/identify" />
 
+        <io.github.controlwear.virtual.joystick.android.JoystickView
+            android:layout_width="192dp"
+            android:layout_height="192dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/forward"
+            app:JV_backgroundColor="?colorSecondary"
+            app:JV_buttonColor="?colorPrimaryVariant"/>
+
         <ImageButton
             android:id="@+id/forward"
             android:layout_width="72dp"

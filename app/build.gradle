@@ -48,4 +48,5 @@ dependencies {
     implementation Libs.groupie_extensions
     implementation Libs.coil
     implementation Libs.lottie
+    implementation Libs.joystick
 }
