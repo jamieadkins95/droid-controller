@@ -14,6 +14,7 @@ object Versions {
     const val androidx_constraint_layout = "2.0.0-beta4"
     const val androidx_fragment = "1.3.0-alpha04"
     const val androidx_activity = "1.2.0-alpha04"
+    const val androidx_lifecycle = "2.2.0"
     const val material_design = "1.2.0-alpha06"
     const val nav_component = "2.2.1"
     const val work_manager = "2.3.4"

@@ -9,6 +9,8 @@ object Libs {
     const val androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:${Versions.androidx_constraint_layout}"
     const val androidx_fragment = "androidx.fragment:fragment-ktx:${Versions.androidx_fragment}"
     const val androidx_activity = "androidx.activity:activity-ktx:${Versions.androidx_activity}"
+    const val androidx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.androidx_lifecycle}"
+    const val androidx_livedata = "androidx.lifecycle:lifecycle-livedata:${Versions.androidx_lifecycle}"
     const val material_design = "com.google.android.material:material:${Versions.material_design}"
     const val nav_component_fragment = "androidx.navigation:navigation-fragment-ktx:${Versions.nav_component}"
     const val nav_component_ui = "androidx.navigation:navigation-ui-ktx:${Versions.nav_component}"

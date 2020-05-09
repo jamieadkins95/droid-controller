@@ -10,17 +10,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.jamieadkins.droid.controller.DeviceControlActivity
+import com.jamieadkins.droid.controller.controls.DroidConnectionViewModel
 import com.jamieadkins.droid.controller.R
 import com.jamieadkins.droid.controller.databinding.FragmentConnectBinding
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
-class ConnectFragment : DaggerFragment(), ConnectContract.View {
+class ConnectFragment : DaggerFragment() {
 
     private var binding: FragmentConnectBinding? = null
-    @Inject lateinit var presenter: ConnectContract.Presenter
+
+    @Inject lateinit var factory: DroidConnectViewModel.Factory
+    private lateinit var viewModel: DroidConnectViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity(), factory).get(DroidConnectViewModel::class.java)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val newBinding = FragmentConnectBinding.inflate(inflater, container, false)
@@ -31,16 +40,54 @@ class ConnectFragment : DaggerFragment(), ConnectContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding?.toolbar?.let { (activity as? AppCompatActivity)?.setSupportActionBar(it) }
-    }
+        viewModel.scanState.observe(viewLifecycleOwner, Observer<ScanState> { state ->
+            when (state) {
+                ScanState.BluetoothDisabled -> {
+                    binding?.scan?.setText(R.string.scan_for_droids)
+                    disableScanButton()
+                    hideScanningIndicator()
+                    showBluetoothPrompt()
+                    hideLocationPrompt()
+                }
+                ScanState.LocationPermissionNotGranted -> {
+                    binding?.scan?.setText(R.string.scan_for_droids)
+                    disableScanButton()
+                    hideScanningIndicator()
+                    showLocationPrompt()
+                    hideBluetoothPrompt()
+                }
+                ScanState.Scanning -> {
+                    binding?.scan?.setText(R.string.scanning)
+                    disableScanButton()
+                    showScanningIndicator()
+                    hideBluetoothPrompt()
+                    hideLocationPrompt()
+                }
+                ScanState.ScanFailed -> {
+                    binding?.scan?.setText(R.string.scan_for_droids)
+                    enableScanButton()
+                    hideScanningIndicator()
+                    hideBluetoothPrompt()
+                    hideLocationPrompt()
+                }
+                is ScanState.DroidFound -> {
+                    binding?.scan?.setText(R.string.connecting)
+                    disableScanButton()
+                    showScanningIndicator()
+                    hideBluetoothPrompt()
+                    hideLocationPrompt()
+                }
+                is ScanState.Connected -> {
+                    binding?.scan?.setText(R.string.connected)
+                    disableScanButton()
+                    hideScanningIndicator()
+                    hideBluetoothPrompt()
+                    hideLocationPrompt()
 
-    override fun onResume() {
-        super.onResume()
-        presenter.onAttach(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        presenter.onDetach()
+                    findNavController().navigate(ConnectFragmentDirections.toControls())
+                }
+            }
+        })
     }
 
     override fun onDestroyView() {
@@ -48,26 +95,24 @@ class ConnectFragment : DaggerFragment(), ConnectContract.View {
         super.onDestroyView()
     }
 
-    override fun showScanningIndicator() {
+    private fun showScanningIndicator() {
         binding?.animationView?.repeatCount = ValueAnimator.INFINITE
         binding?.animationView?.resumeAnimation()
-        binding?.scan?.setText(R.string.scanning)
     }
 
-    override fun hideScanningIndicator() {
+    private fun hideScanningIndicator() {
         binding?.animationView?.repeatCount = 0
-        binding?.scan?.setText(R.string.scan_for_droids)
     }
 
-    override fun enableScanButton() {
+    private fun enableScanButton() {
         binding?.scan?.isEnabled = true
     }
 
-    override fun disableScanButton() {
+    private fun disableScanButton() {
         binding?.scan?.isEnabled = false
     }
 
-    override fun showBluetoothPrompt() {
+    private fun showBluetoothPrompt() {
         binding?.bluetoothError?.apply {
             binding.text.setText(R.string.bt_reason)
             binding.button.setText(R.string.enable)
@@ -78,11 +123,11 @@ class ConnectFragment : DaggerFragment(), ConnectContract.View {
         }
     }
 
-    override fun hideBluetoothPrompt() {
+    private fun hideBluetoothPrompt() {
         binding?.bluetoothError?.visibility = View.GONE
     }
 
-    override fun showLocationPrompt() {
+    private fun showLocationPrompt() {
         binding?.locationError?.apply {
             binding.text.setText(R.string.location_error)
             binding.button.setText(R.string.settings)
@@ -94,11 +139,7 @@ class ConnectFragment : DaggerFragment(), ConnectContract.View {
         }
     }
 
-    override fun hideLocationPrompt() {
+    private fun hideLocationPrompt() {
         binding?.locationError?.visibility = View.GONE
-    }
-
-    override fun connectToDroid(address: String) {
-        findNavController().navigate(ConnectFragmentDirections.toControls(address))
     }
 }

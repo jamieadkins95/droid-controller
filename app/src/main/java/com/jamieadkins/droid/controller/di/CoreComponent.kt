@@ -2,6 +2,7 @@ package com.jamieadkins.droid.controller.di
 
 import android.content.Context
 import com.jamieadkins.droid.controller.DroidApplication
+import com.jamieadkins.droid.controller.controls.DroidManager
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -12,6 +13,8 @@ interface CoreComponent {
 
     @ApplicationContext
     fun exposeContext(): Context
+
+    fun exposeDroidManager(): DroidManager
 
     fun inject(target: DroidApplication)
 

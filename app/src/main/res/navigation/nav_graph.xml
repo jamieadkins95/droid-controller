@@ -32,9 +32,11 @@
         android:label="Controls"
         android:name="com.jamieadkins.droid.controller.controls.ControlsFragment">
 
-        <argument
-            android:name="address"
-            app:argType="string" />
+        <action
+            android:id="@+id/to_scan"
+            app:destination="@id/connect"
+            app:popUpTo="@id/controls"
+            app:popUpToInclusive="true" />
 
     </fragment>
 

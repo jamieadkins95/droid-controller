@@ -1,11 +1,6 @@
 package com.jamieadkins.droid.controller.controls
 
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Bundle
-import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -15,19 +10,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.navigation.fragment.navArgs
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.jamieadkins.droid.controller.R
-import com.jamieadkins.droid.controller.addToComposite
 import com.jamieadkins.droid.controller.databinding.FragmentControlsBinding
 import dagger.android.support.DaggerFragment
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
 
 class ControlsFragment : DaggerFragment() {
 
-    private val args: ControlsFragmentArgs by navArgs()
     private var binding: FragmentControlsBinding? = null
-    private var droidService: DroidBluetoothLeService.DroidServiceBinder? = null
+    @Inject lateinit var factory: DroidConnectionViewModel.Factory
+    private lateinit var viewModel: DroidConnectionViewModel
     private var compositeDisposable = CompositeDisposable()
 
     private val joystickConstraints = ConstraintSet()
@@ -37,46 +33,9 @@ class ControlsFragment : DaggerFragment() {
         setHasOptionsMenu(true)
     }
 
-    // Code to manage Service lifecycle.
-    private val serviceConnection: ServiceConnection = object : ServiceConnection {
-        override fun onServiceConnected(componentName: ComponentName, service: IBinder) {
-            droidService = service as DroidBluetoothLeService.DroidServiceBinder
-
-            droidService?.connectionStatus
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe { state ->
-                    binding?.connect?.apply {
-                        when (state) {
-                            ConnectionState.Disconnected -> {
-                                setText(R.string.connect)
-                                isEnabled = true
-                            }
-                            ConnectionState.ConnectedWithoutHandshake -> {
-                                setText(R.string.connecting)
-                                isEnabled = false
-                            }
-                            ConnectionState.Connected -> {
-                                setText(R.string.connected)
-                                isEnabled = false
-                            }
-                        }
-                    }
-                }
-                ?.addToComposite(compositeDisposable)
-
-            droidService?.connect(args.address)
-        }
-
-        override fun onServiceDisconnected(componentName: ComponentName) {
-            droidService = null
-            compositeDisposable.clear()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val serviceIntent = Intent(requireContext(), DroidBluetoothLeService::class.java)
-        requireActivity().bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+        viewModel = ViewModelProvider(requireActivity(), factory).get(DroidConnectionViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -91,18 +50,24 @@ class ControlsFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.connectionState.observe(viewLifecycleOwner, Observer<ConnectionState> { state ->
+            if (state is ConnectionState.Disconnected) {
+                findNavController().navigate(ControlsFragmentDirections.toScan())
+            }
+        })
+
         binding?.toolbar?.let { (activity as? AppCompatActivity)?.setSupportActionBar(it) }
-        binding?.identify?.setOnClickListener { droidService?.sendCommand(DroidAction.Identify) }
-        binding?.blaster?.setOnClickListener { droidService?.sendCommand(DroidAction.BlasterSound) }
-        binding?.reaction1?.setOnClickListener { droidService?.sendCommand(DroidAction.Reaction(1)) }
-        binding?.reaction2?.setOnClickListener { droidService?.sendCommand(DroidAction.Reaction(2)) }
-        binding?.reaction3?.setOnClickListener { droidService?.sendCommand(DroidAction.Reaction(3)) }
-        binding?.reaction4?.setOnClickListener { droidService?.sendCommand(DroidAction.Reaction(4)) }
-        binding?.reaction5?.setOnClickListener { droidService?.sendCommand(DroidAction.Reaction(5)) }
-        binding?.reaction6?.setOnClickListener { droidService?.sendCommand(DroidAction.Reaction(6)) }
-        binding?.reaction7?.setOnClickListener { droidService?.sendCommand(DroidAction.Reaction(7)) }
-        binding?.reaction8?.setOnClickListener { droidService?.sendCommand(DroidAction.Reaction(8)) }
-        binding?.volume?.addOnChangeListener { _, value, _ -> droidService?.sendCommand(DroidAction.Volume(value.toInt())) }
+        binding?.identify?.setOnClickListener { viewModel?.sendCommand(DroidAction.Identify) }
+        binding?.blaster?.setOnClickListener { viewModel?.sendCommand(DroidAction.BlasterSound) }
+        binding?.reaction1?.setOnClickListener { viewModel?.sendCommand(DroidAction.Reaction(1)) }
+        binding?.reaction2?.setOnClickListener { viewModel?.sendCommand(DroidAction.Reaction(2)) }
+        binding?.reaction3?.setOnClickListener { viewModel?.sendCommand(DroidAction.Reaction(3)) }
+        binding?.reaction4?.setOnClickListener { viewModel?.sendCommand(DroidAction.Reaction(4)) }
+        binding?.reaction5?.setOnClickListener { viewModel?.sendCommand(DroidAction.Reaction(5)) }
+        binding?.reaction6?.setOnClickListener { viewModel?.sendCommand(DroidAction.Reaction(6)) }
+        binding?.reaction7?.setOnClickListener { viewModel?.sendCommand(DroidAction.Reaction(7)) }
+        binding?.reaction8?.setOnClickListener { viewModel?.sendCommand(DroidAction.Reaction(8)) }
+        binding?.volume?.addOnChangeListener { _, value, _ -> viewModel?.sendCommand(DroidAction.Volume(value.toInt())) }
         binding?.forward?.setOnTouchListener { _, event ->
             onButtonTouch(event, DroidAction.Forward(binding?.speed?.value?.toInt() ?: 0), DroidAction.Forward(0))
         }
@@ -150,12 +115,6 @@ class ControlsFragment : DaggerFragment() {
         super.onDestroyView()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        activity?.unbindService(serviceConnection)
-        droidService = null
-    }
-
     private fun setupButtonConstraints(set: ConstraintSet) {
         set.connect(R.id.head_left, ConstraintSet.TOP, R.id.forward, ConstraintSet.TOP)
         set.connect(R.id.head_left, ConstraintSet.BOTTOM, R.id.forward, ConstraintSet.BOTTOM)
@@ -165,8 +124,8 @@ class ControlsFragment : DaggerFragment() {
 
     private fun onButtonTouch(event: MotionEvent, downAction: DroidAction, upAction: DroidAction): Boolean {
         when (event.action) {
-            MotionEvent.ACTION_DOWN -> droidService?.sendCommand(downAction)
-            MotionEvent.ACTION_UP -> droidService?.sendCommand(upAction)
+            MotionEvent.ACTION_DOWN -> viewModel?.sendCommand(downAction)
+            MotionEvent.ACTION_UP -> viewModel?.sendCommand(upAction)
         }
         return true
     }

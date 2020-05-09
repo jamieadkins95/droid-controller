@@ -1,29 +1,31 @@
 package com.jamieadkins.droid.controller.controls
 
-import android.app.Service
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothProfile
-import android.content.Intent
-import android.os.Binder
-import android.os.IBinder
+import android.content.Context
 import com.jamieadkins.droid.controller.addToComposite
 import com.jamieadkins.droid.controller.controls.BluetoothConstants.WRITE_CHARACTERISTIC_UUID
+import com.jamieadkins.droid.controller.di.ApplicationContext
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.util.UUID
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class DroidBluetoothLeService : Service(), DroidService {
+@Singleton
+class DroidManager @Inject constructor(@ApplicationContext private val context: Context) : DroidService {
     private var bluetoothAdapter: BluetoothAdapter? = null
     private var bluetoothGatt: BluetoothGatt? = null
     private var handshakeComplete = false
-    private val binder = DroidServiceBinder()
+    val connectionStatus: BehaviorSubject<ConnectionState> = BehaviorSubject.createDefault(ConnectionState.Disconnected)
 
     private val commands = ConcurrentLinkedQueue<String>()
     private val compositeDisposable = CompositeDisposable()
@@ -34,12 +36,12 @@ class DroidBluetoothLeService : Service(), DroidService {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
             Timber.i("onConnectionStateChange status=$status state=$newState")
             if (newState == BluetoothProfile.STATE_CONNECTED) {
-                binder.connectionStatus.onNext(ConnectionState.ConnectedWithoutHandshake)
+                connectionStatus.onNext(ConnectionState.ConnectedWithoutHandshake)
                 Timber.i("Connected to GATT server.")
                 Timber.i("Attempting to start service discovery: ${bluetoothGatt?.discoverServices()}")
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 handshakeComplete = false
-                binder.connectionStatus.onNext(ConnectionState.Disconnected)
+                connectionStatus.onNext(ConnectionState.Disconnected)
                 Timber.i("Disconnected from GATT server.")
             }
         }
@@ -49,7 +51,7 @@ class DroidBluetoothLeService : Service(), DroidService {
                 if (!handshakeComplete) {
                     performHandshake()
                     handshakeComplete = true
-                    binder.connectionStatus.onNext(ConnectionState.Connected)
+                    connectionStatus.onNext(ConnectionState.Connected)
                 }
             } else {
                 Timber.w("onServicesDiscovered received: $status")
@@ -75,19 +77,16 @@ class DroidBluetoothLeService : Service(), DroidService {
         }
     }
 
-    override fun onCreate() {
-        super.onCreate()
+    fun initialise() {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         Observable.interval(5, TimeUnit.MILLISECONDS)
             .subscribe { commands.poll()?.let(::writeCharacteristic) }
             .addToComposite(compositeDisposable)
     }
 
-    override fun onBind(intent: Intent): IBinder? = binder
-
-    override fun onDestroy() {
-        super.onDestroy()
+    fun onDestroy() {
         bluetoothGatt?.close()
+        connectionStatus.onNext(ConnectionState.Disconnected)
         bluetoothGatt = null
         compositeDisposable.clear()
     }
@@ -118,10 +117,12 @@ class DroidBluetoothLeService : Service(), DroidService {
         }
         // We want to directly connect to the device, so we are setting the autoConnect
         // parameter to false.
-        bluetoothGatt = device.connectGatt(this, true, mGattCallback)
+        bluetoothGatt = device.connectGatt(context, true, mGattCallback)
         Timber.d("Trying to create a new connection.")
         return true
     }
+
+    override fun observe(): Observable<ConnectionState> = connectionStatus
 
     /**
      * Disconnects an existing connection or cancel a pending connection. The disconnection result
@@ -177,9 +178,5 @@ class DroidBluetoothLeService : Service(), DroidService {
         } catch (e: InterruptedException) {
             e.printStackTrace()
         }
-    }
-
-    inner class DroidServiceBinder : Binder(), DroidService by this@DroidBluetoothLeService {
-        val connectionStatus: BehaviorSubject<ConnectionState> = BehaviorSubject.createDefault(ConnectionState.Disconnected)
     }
 }
