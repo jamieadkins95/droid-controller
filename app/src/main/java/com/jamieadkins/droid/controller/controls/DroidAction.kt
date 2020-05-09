@@ -7,15 +7,17 @@ sealed class DroidAction(val commands: List<String>) {
 
     constructor(command: String) : this(listOf(command))
 
+    constructor(vararg commands: String) : this(commands.toList())
+
     object Handshake : DroidAction("22 20 01")
 
     object ResetSound : DroidAction("27 42 0f 44 44 00 1f 00")
 
-    object BlasterSound : DroidAction("27 42 0f 44 44 00 1f 0a")
+    object BlasterSound : DroidAction("27 42 0f 44 44 00 1f 0a", "27 42 0f 44 44 00 18 00")
 
     object PlaySound : DroidAction("27 42 0f 44 44 00 18 00")
 
-    object Identify : DroidAction("27 42 0f 44 44 00 18 02")
+    object Identify : DroidAction("27 42 0f 44 44 00 1f 00", "27 42 0f 44 44 00 18 02")
 
     /**
      * execute pre-programmed script X where X is specified by second-to-last byte

@@ -68,9 +68,7 @@ class ControlsFragment : DaggerFragment() {
         binding?.toolbar?.let { (activity as? AppCompatActivity)?.setSupportActionBar(it) }
         binding?.identify?.setOnClickListener { droidService?.sendCommand(DroidAction.Identify) }
         binding?.blaster?.setOnClickListener {
-            droidService?.sendCommand(DroidAction.BlasterSound); droidService?.sendCommand(
-            DroidAction.PlaySound
-        );
+            droidService?.sendCommand(DroidAction.BlasterSound)
         }
         binding?.volume?.addOnChangeListener { _, value, _ -> droidService?.sendCommand(DroidAction.Volume(value.toInt())) }
         binding?.forward?.setOnTouchListener { _, event ->

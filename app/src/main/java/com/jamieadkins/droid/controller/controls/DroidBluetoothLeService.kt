@@ -173,14 +173,7 @@ class DroidBluetoothLeService : Service(), DroidService {
             Thread.sleep(50)
             sendCommand(DroidAction.Handshake)
             Thread.sleep(50)
-            sendCommand(DroidAction.ResetSound)
-            Thread.sleep(10)
-            sendCommand(DroidAction.PlaySound)
-            Thread.sleep(50)
-            sendCommand(DroidAction.ResetSound)
-            Thread.sleep(10)
-            sendCommand(DroidAction.PlaySound)
-            Thread.sleep(50)
+            sendCommand(DroidAction.Identify)
         } catch (e: InterruptedException) {
             e.printStackTrace()
         }
