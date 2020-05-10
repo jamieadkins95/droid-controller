@@ -5,9 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.jamieadkins.droid.controller.addToComposite
-import com.jamieadkins.droid.controller.connect.BleScanner
-import com.jamieadkins.droid.controller.connect.BluetoothEnabledChecker
-import com.jamieadkins.droid.controller.connect.LocationPermissionChecker
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -15,15 +12,15 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class DroidConnectionViewModel(
-    private val droidManager: DroidManager
-) : ViewModel(), DroidService by droidManager {
+    private val droidConnectionManager: DroidConnectionManager
+) : ViewModel(), DroidService by droidConnectionManager {
 
     private val compositeDisposable = CompositeDisposable()
     private val _connectionState = MutableLiveData<ConnectionState>()
     val connectionState: LiveData<ConnectionState> get() = _connectionState
 
     init {
-        droidManager.observe()
+        droidConnectionManager.observe()
             .distinctUntilChanged()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -33,15 +30,15 @@ class DroidConnectionViewModel(
 
     override fun onCleared() {
         compositeDisposable.clear()
-        droidManager.disconnect()
+        droidConnectionManager.disconnect()
         super.onCleared()
     }
 
     class Factory @Inject constructor(
-        private val droidManager: Provider<DroidManager>
+        private val droidConnectionManager: Provider<DroidConnectionManager>
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return DroidConnectionViewModel(droidManager.get()) as T
+            return DroidConnectionViewModel(droidConnectionManager.get()) as T
         }
     }
 

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.jamieadkins.droid.controller.addToComposite
 import com.jamieadkins.droid.controller.controls.ConnectionState
-import com.jamieadkins.droid.controller.controls.DroidManager
+import com.jamieadkins.droid.controller.controls.DroidConnectionManager
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -16,7 +16,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class DroidConnectViewModel(
-    private val droidManager: DroidManager,
+    private val droidConnectionManager: DroidConnectionManager,
     private val bleScanner: BleScanner,
     private val bluetoothEnabledChecker: BluetoothEnabledChecker,
     private val locationPermissionChecker: LocationPermissionChecker
@@ -52,8 +52,8 @@ class DroidConnectViewModel(
             .distinctUntilChanged()
             .switchMap { state ->
                 if (state is ScanState.DroidFound) {
-                    droidManager.connect(state.address)
-                    droidManager.observe()
+                    droidConnectionManager.connect(state.address)
+                    droidConnectionManager.observe()
                         .map { connection -> if (connection is ConnectionState.Connected) ScanState.Connected(state.address) else state }
                         .startWith(state)
                 } else {
@@ -64,14 +64,14 @@ class DroidConnectViewModel(
     }
 
     class Factory @Inject constructor(
-        private val droidManager: Provider<DroidManager>,
+        private val droidConnectionManager: Provider<DroidConnectionManager>,
         private val bleScanner: Provider<BleScanner>,
         private val bluetoothEnabledChecker: Provider<BluetoothEnabledChecker>,
         private val locationPermissionChecker: Provider<LocationPermissionChecker>
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return DroidConnectViewModel(
-                droidManager.get(), bleScanner.get(), bluetoothEnabledChecker.get(), locationPermissionChecker.get()
+                droidConnectionManager.get(), bleScanner.get(), bluetoothEnabledChecker.get(), locationPermissionChecker.get()
             ) as T
         }
     }
