@@ -1,5 +1,6 @@
 package com.jamieadkins.droid.controller.controls
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -36,7 +37,7 @@ class ControlsFragment : DaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity(), factory).get(DroidConnectionViewModel::class.java)
+        viewModel = ViewModelProvider(viewModelStore, factory).get(DroidConnectionViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -49,6 +50,7 @@ class ControlsFragment : DaggerFragment() {
         inflater.inflate(R.menu.controls, menu)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.connectionState.observe(viewLifecycleOwner, Observer<ConnectionState> { state ->
@@ -57,18 +59,23 @@ class ControlsFragment : DaggerFragment() {
             }
         })
 
-        binding?.toolbar?.let { (activity as? AppCompatActivity)?.setSupportActionBar(it) }
-        binding?.identify?.setOnClickListener { viewModel?.sendCommand(DroidAction.Identify) }
-        binding?.blaster?.setOnClickListener { viewModel?.sendCommand(DroidAction.BlasterSound) }
-        binding?.reaction1?.setOnClickListener { viewModel?.sendCommand(DroidAction.Reaction(1)) }
-        binding?.reaction2?.setOnClickListener { viewModel?.sendCommand(DroidAction.Reaction(2)) }
-        binding?.reaction3?.setOnClickListener { viewModel?.sendCommand(DroidAction.Reaction(3)) }
-        binding?.reaction4?.setOnClickListener { viewModel?.sendCommand(DroidAction.Reaction(4)) }
-        binding?.reaction5?.setOnClickListener { viewModel?.sendCommand(DroidAction.Reaction(5)) }
-        binding?.reaction6?.setOnClickListener { viewModel?.sendCommand(DroidAction.Reaction(6)) }
-        binding?.reaction7?.setOnClickListener { viewModel?.sendCommand(DroidAction.Reaction(7)) }
-        binding?.reaction8?.setOnClickListener { viewModel?.sendCommand(DroidAction.Reaction(8)) }
-        binding?.volume?.addOnChangeListener { _, value, _ -> viewModel?.sendCommand(DroidAction.Volume(value.toInt())) }
+        binding?.toolbar?.let {
+            val activity = activity as? AppCompatActivity
+            activity?.setSupportActionBar(it)
+            activity?.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_24)
+            activity?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        }
+        binding?.identify?.setOnClickListener { viewModel.sendCommand(DroidAction.Identify) }
+        binding?.blaster?.setOnClickListener { viewModel.sendCommand(DroidAction.BlasterSound) }
+        binding?.reaction1?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(1)) }
+        binding?.reaction2?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(2)) }
+        binding?.reaction3?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(3)) }
+        binding?.reaction4?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(4)) }
+        binding?.reaction5?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(5)) }
+        binding?.reaction6?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(6)) }
+        binding?.reaction7?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(7)) }
+        binding?.reaction8?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(8)) }
+        binding?.volume?.addOnChangeListener { _, value, _ -> viewModel.sendCommand(DroidAction.Volume(value.toInt())) }
         binding?.forward?.setOnTouchListener { _, event ->
             onButtonTouch(event, DroidAction.Forward(binding?.speed?.value?.toInt() ?: 0), DroidAction.Forward(0))
         }
@@ -97,6 +104,11 @@ class ControlsFragment : DaggerFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            android.R.id.home -> {
+                viewModel.disconnect()
+                findNavController().navigate(ControlsFragmentDirections.toScan())
+                true
+            }
             R.id.menu_joystick -> {
                 item.isChecked = !item.isChecked
                 binding?.constraintLayout?.let(joystickConstraints::applyTo)

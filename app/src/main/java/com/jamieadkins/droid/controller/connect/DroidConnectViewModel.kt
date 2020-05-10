@@ -11,6 +11,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -21,13 +22,30 @@ class DroidConnectViewModel(
     private val locationPermissionChecker: LocationPermissionChecker
 ) : ViewModel() {
 
+    private val scanRequests = BehaviorSubject.create<Any>()
     private val compositeDisposable = CompositeDisposable()
     private val _scanState = MutableLiveData<ScanState>()
     val scanState: LiveData<ScanState> get() = _scanState
 
     init {
-        droidManager.initialise()
-        bluetoothEnabledChecker.checkBluetoothEnabled()
+        scanRequests.switchMap { scanAndConnect() }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { state -> _scanState.value = state }
+            .addToComposite(compositeDisposable)
+    }
+
+    override fun onCleared() {
+        compositeDisposable.clear()
+        super.onCleared()
+    }
+
+    fun scan() {
+        scanRequests.onNext(Any())
+    }
+
+    private fun scanAndConnect(): Observable<ScanState> {
+        return bluetoothEnabledChecker.checkBluetoothEnabled()
             .switchIfEmpty(locationPermissionChecker.checkLocationPermission())
             .toObservable()
             .switchIfEmpty(bleScanner.scan())
@@ -43,16 +61,6 @@ class DroidConnectViewModel(
                 }
             }
             .distinctUntilChanged()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { state -> _scanState.value = state }
-            .addToComposite(compositeDisposable)
-    }
-
-    override fun onCleared() {
-        compositeDisposable.clear()
-        super.onCleared()
-        droidManager.onDestroy()
     }
 
     class Factory @Inject constructor(

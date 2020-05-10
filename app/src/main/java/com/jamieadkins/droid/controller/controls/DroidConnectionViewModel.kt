@@ -33,8 +33,8 @@ class DroidConnectionViewModel(
 
     override fun onCleared() {
         compositeDisposable.clear()
+        droidManager.disconnect()
         super.onCleared()
-        droidManager.onDestroy()
     }
 
     class Factory @Inject constructor(

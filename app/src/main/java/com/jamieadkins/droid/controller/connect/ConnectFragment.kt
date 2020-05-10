@@ -28,7 +28,7 @@ class ConnectFragment : DaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity(), factory).get(DroidConnectViewModel::class.java)
+        viewModel = ViewModelProvider(viewModelStore, factory).get(DroidConnectViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -40,18 +40,19 @@ class ConnectFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding?.toolbar?.let { (activity as? AppCompatActivity)?.setSupportActionBar(it) }
+        binding?.scan?.setOnClickListener { viewModel.scan() }
         viewModel.scanState.observe(viewLifecycleOwner, Observer<ScanState> { state ->
             when (state) {
                 ScanState.BluetoothDisabled -> {
                     binding?.scan?.setText(R.string.scan_for_droids)
-                    disableScanButton()
+                    enableScanButton()
                     hideScanningIndicator()
                     showBluetoothPrompt()
                     hideLocationPrompt()
                 }
                 ScanState.LocationPermissionNotGranted -> {
                     binding?.scan?.setText(R.string.scan_for_droids)
-                    disableScanButton()
+                    enableScanButton()
                     hideScanningIndicator()
                     showLocationPrompt()
                     hideBluetoothPrompt()
