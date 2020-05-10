@@ -42,7 +42,7 @@
     </item>
 
     <item android:id="@+id/menu_advanced"
-        android:visible="false"
+        android:visible="true"
         android:orderInCategory="2"
         android:title="@string/advanced"
         app:showAsAction="never" />

@@ -39,12 +39,15 @@
     <string name="location_error">We need the location permission to search for bluetooth devices. (But we don\'t actually fetch your location.)</string>
     <string name="connection_hint">The Droid can only have one active connection at a time. Make sure that your controller is off and the Droid Depot app is closed.</string>
     <string name="timeout_info">Sometimes this takes a while. Turn your Droid off then on again if this lasts longer than 30 seconds.</string>
+    <string name="advanced_controls_warning">This will send raw data to your droid. Do not use this if you don\'t know what you are doing. Use at your own risk.</string>
     <string name="scan">Scan</string>
     <string name="scan_for_droids">Scan For Droids</string>
     <string name="scanning">Scanning</string>
     <string name="menu_stop">Stop</string>
-    <string name="custom_command">Custom Command</string>
-    <string name="send">Send</string>
+    <string name="custom_command">Commands</string>
+    <string name="start">Start</string>
+    <string name="playing">Playing</string>
+    <string name="cancel">Cancel</string>
     <string name="identify">Identify</string>
     <string name="blaster">Blaster</string>
     <string name="volume">Volume</string>
