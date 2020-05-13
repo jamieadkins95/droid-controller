@@ -8,18 +8,28 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.jamieadkins.droid.controller.R
 import com.jamieadkins.droid.controller.controls.ConnectionState
 import com.jamieadkins.droid.controller.databinding.FragmentAdvancedControlsBinding
 import dagger.android.support.AndroidSupportInjection
-import timber.log.Timber
 import javax.inject.Inject
 
 class AdvancedControlsFragment : BottomSheetDialogFragment() {
+
+    private val importFromFile = registerForActivityResult(ImportCsv()) { data ->
+        data?.also {
+            fileImporter.readTextFile(it)
+                .subscribe { lines ->
+                    binding?.input?.setText(lines.joinToString("\n"))
+                }
+        }
+    }
 
     private var binding: FragmentAdvancedControlsBinding? = null
 
     @Inject lateinit var factory: DroidAdvancedControlsViewModel.Factory
     @Inject lateinit var inputParser: CommandInputParser
+    @Inject lateinit var fileImporter: FileImporter
     private lateinit var viewModel: DroidAdvancedControlsViewModel
 
     override fun onAttach(context: Context) {
@@ -45,10 +55,12 @@ class AdvancedControlsFragment : BottomSheetDialogFragment() {
                 ConnectionState.Disconnected -> dismiss()
                 ConnectionState.ConnectedWithoutHandshake -> {
                     binding?.start?.isEnabled = false
+                    binding?.start?.setText(R.string.start)
                     binding?.cancel?.visibility = View.GONE
                 }
                 is ConnectionState.Connected -> {
                     binding?.start?.isEnabled = !state.doingSequencePlayback
+                    binding?.start?.setText(if (state.doingSequencePlayback) R.string.playing else R.string.start)
                     binding?.cancel?.visibility = if (state.doingSequencePlayback) View.VISIBLE else View.GONE
                 }
             }
@@ -62,5 +74,7 @@ class AdvancedControlsFragment : BottomSheetDialogFragment() {
         binding?.cancel?.setOnClickListener {
             viewModel.stopSequence()
         }
+
+        binding?.importFromFile?.setOnClickListener { importFromFile.launch(Unit) }
     }
 }

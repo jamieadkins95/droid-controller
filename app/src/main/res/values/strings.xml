@@ -40,6 +40,7 @@
     <string name="connection_hint">The Droid can only have one active connection at a time. Make sure that your controller is off and the Droid Depot app is closed.</string>
     <string name="timeout_info">Sometimes this takes a while. Turn your Droid off then on again if this lasts longer than 30 seconds.</string>
     <string name="advanced_controls_warning">This will send raw data to your droid. Do not use this if you don\'t know what you are doing. Use at your own risk.</string>
+    <string name="advanced_controls_info">Format each line with \"command, delayInMillis\".\n\n\"1234\", \"12 34\" and \"12:34\" or all accepted formats for the command.\n\ne.g.\"27 42 0f 44 44 00 1f 0a, 100\n\n27 42 0f 44 44 00 18 00, 1000\"</string>
     <string name="scan">Scan</string>
     <string name="scan_for_droids">Scan For Droids</string>
     <string name="scanning">Scanning</string>
@@ -48,6 +49,7 @@
     <string name="start">Start</string>
     <string name="playing">Playing</string>
     <string name="cancel">Cancel</string>
+    <string name="import_from_file">Import</string>
     <string name="identify">Identify</string>
     <string name="blaster">Blaster</string>
     <string name="volume">Volume</string>
