@@ -14,8 +14,8 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.jamieadkins.droid.controller.R
+import com.jamieadkins.droid.controller.controls.advanced.AdvancedControlsFragment
 import com.jamieadkins.droid.controller.databinding.FragmentControlsBinding
 import dagger.android.support.DaggerFragment
 import io.reactivex.disposables.CompositeDisposable

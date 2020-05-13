@@ -1,0 +1,8 @@
+dependencies {
+    testImplementation Libs.junit
+    testImplementation Libs.mockito_inline
+    testImplementation Libs.mockito_kotlin
+    testImplementation Libs.kotlin_test_runtime
+    testImplementation Libs.kotlin_test_reflect
+    testImplementation Libs.kotlin_test_junit
+}

@@ -4,6 +4,7 @@ apply plugin: 'kotlin-kapt'
 // apply plugin: 'com.google.gms.google-services' TODO Uncomment when firebase is setup
 // apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'androidx.navigation.safeargs'
+apply from: '../test-dependencies.gradle'
 
 android {
     compileSdkVersion Versions.compile_sdk

@@ -8,11 +8,13 @@ import android.bluetooth.BluetoothProfile
 import android.content.Context
 import com.jamieadkins.droid.controller.addToComposite
 import com.jamieadkins.droid.controller.controls.BluetoothConstants.WRITE_CHARACTERISTIC_UUID
+import com.jamieadkins.droid.controller.controls.advanced.DroidActionWithDelay
 import com.jamieadkins.droid.controller.di.ApplicationContext
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.util.UUID
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -29,6 +31,7 @@ class DroidConnectionManager @Inject constructor(@ApplicationContext private val
 
     private val commands = ConcurrentLinkedQueue<String>()
     private val compositeDisposable = CompositeDisposable()
+    private var sequenceDisposable: Disposable? = null
 
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
@@ -51,7 +54,7 @@ class DroidConnectionManager @Inject constructor(@ApplicationContext private val
                 if (!handshakeComplete) {
                     performHandshake()
                     handshakeComplete = true
-                    connectionStatus.onNext(ConnectionState.Connected)
+                    connectionStatus.onNext(ConnectionState.Connected())
                 }
             } else {
                 Timber.w("onServicesDiscovered received: $status")
@@ -85,10 +88,10 @@ class DroidConnectionManager @Inject constructor(@ApplicationContext private val
     }
 
     fun onDestroy() {
+        compositeDisposable.clear()
         bluetoothGatt?.close()
         connectionStatus.onNext(ConnectionState.Disconnected)
         bluetoothGatt = null
-        compositeDisposable.clear()
     }
 
     /**
@@ -132,6 +135,24 @@ class DroidConnectionManager @Inject constructor(@ApplicationContext private val
      */
     override fun disconnect() {
         bluetoothGatt?.disconnect()
+    }
+
+    override fun startSequence(actions: List<DroidActionWithDelay>) {
+        sequenceDisposable?.dispose()
+        sequenceDisposable = Observable.fromIterable(actions)
+            .concatMapCompletable { action ->
+                Completable.fromCallable { commands.add(action.command) }
+                    .delay(action.delayMs, TimeUnit.MILLISECONDS)
+            }
+            .doOnSubscribe { connectionStatus.onNext(ConnectionState.Connected(true)) }
+            .doOnTerminate { connectionStatus.onNext(ConnectionState.Connected(false)) }
+            .doOnDispose { connectionStatus.onNext(ConnectionState.Connected(false)) }
+            .onErrorComplete()
+            .subscribe()
+    }
+
+    override fun stopSequence() {
+        sequenceDisposable?.dispose()
     }
 
     override fun sendCommand(droidAction: DroidAction) {

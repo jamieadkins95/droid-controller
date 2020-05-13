@@ -60,12 +60,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
         android:text="@string/cancel"
-        app:layout_constraintTop_toTopOf="@id/send"
-        app:layout_constraintBottom_toBottomOf="@id/send"
-        app:layout_constraintEnd_toStartOf="@id/send" />
+        app:layout_constraintTop_toTopOf="@id/start"
+        app:layout_constraintBottom_toBottomOf="@id/start"
+        app:layout_constraintEnd_toStartOf="@id/start" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/send"
+        android:id="@+id/start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
