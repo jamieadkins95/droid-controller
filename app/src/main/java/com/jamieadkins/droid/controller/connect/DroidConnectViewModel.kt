@@ -75,7 +75,14 @@ class DroidConnectViewModel(
     }
 
     fun onDroidSelected(address: String) {
-        connectionStateMachine.postEvent(ConnectionEvent.DroidSelected(address))
+        bluetoothEnabledChecker.checkBluetoothEnabled()
+            .switchIfEmpty(locationPermissionChecker.checkLocationPermission())
+            .toObservable()
+            .switchIfEmpty(Observable.just(ConnectionEvent.DroidSelected(address)))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { event -> connectionStateMachine.postEvent(event) }
+            .addToComposite(compositeDisposable)
     }
 
     private fun scanAndConnect(): Observable<ConnectionEvent> {
