@@ -66,9 +66,12 @@ class DroidConnectViewModel(
         scanRequests.onNext(Any())
     }
 
-    fun onDroidNamed(name: String, address: String, type: String) {
-        droidDao.insert(Droid(address, name, type)).subscribeOn(Schedulers.io()).onErrorComplete().subscribe()
+    fun onDroidNamed(address: String) {
         connectionStateMachine.postEvent(ConnectionEvent.DroidNamed(address))
+    }
+
+    fun onDroidNamingCancelled() {
+        connectionStateMachine.postEvent(ConnectionEvent.DroidNamingCancelled)
     }
 
     fun onDroidSelected(address: String) {

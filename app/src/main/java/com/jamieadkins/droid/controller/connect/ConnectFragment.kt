@@ -38,10 +38,13 @@ class ConnectFragment : DaggerFragment() {
         viewModel = ViewModelProvider(viewModelStore, factory).get(DroidConnectViewModel::class.java)
 
         setFragmentResultListener("name") { key, bundle ->
-            val name = bundle.getString("name") ?: ""
-            val droidType = bundle.getString("type") ?: "r"
-            val address = bundle.getString("address")!!
-            viewModel.onDroidNamed(name, address, droidType)
+            val successfullyNamed = bundle.getBoolean("success")
+            if (successfullyNamed) {
+                val address = bundle.getString("address")!!
+                viewModel.onDroidNamed(address)
+            } else {
+                viewModel.onDroidNamingCancelled()
+            }
         }
     }
 
