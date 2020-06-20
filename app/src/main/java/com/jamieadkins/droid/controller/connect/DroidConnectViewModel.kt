@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.jamieadkins.droid.controller.addToComposite
 import com.jamieadkins.droid.controller.controls.DroidConnectionManager
+import com.jamieadkins.droid.controller.droid.Droid
+import com.jamieadkins.droid.controller.droid.DroidDao
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -19,15 +21,15 @@ class DroidConnectViewModel(
     private val bleScanner: BleScanner,
     private val bluetoothEnabledChecker: BluetoothEnabledChecker,
     private val locationPermissionChecker: LocationPermissionChecker,
-    private val connectionStateMachine: ConnectionStateMachine
+    private val connectionStateMachine: ConnectionStateMachine,
+    private val droidDao: DroidDao
 ) : ViewModel() {
 
     private val scanRequests = BehaviorSubject.create<Any>()
     private val compositeDisposable = CompositeDisposable()
     private val _scanState = MutableLiveData<ConnectionState>()
     val scanState: LiveData<ConnectionState> get() = _scanState
-    private val _previousDroids = MutableLiveData<List<Droid>>()
-    val previousDroids: LiveData<List<Droid>> get() = _previousDroids
+    val previousDroids: LiveData<List<Droid>> = droidDao.getDroids()
 
     init {
         scanRequests.switchMap { scanAndConnect() }
@@ -53,8 +55,6 @@ class DroidConnectViewModel(
                 }
             }
             .addToComposite(compositeDisposable)
-
-        _previousDroids.value = listOf(Droid("DE:84:98:66:34:63", "J4-R5", "r"))
     }
 
     override fun onCleared() {
@@ -67,6 +67,7 @@ class DroidConnectViewModel(
     }
 
     fun onDroidNamed(name: String, address: String, type: String) {
+        droidDao.insert(Droid(address, name, type)).subscribeOn(Schedulers.io()).onErrorComplete().subscribe()
         connectionStateMachine.postEvent(ConnectionEvent.DroidNamed(address))
     }
 
@@ -87,11 +88,17 @@ class DroidConnectViewModel(
         private val bleScanner: Provider<BleScanner>,
         private val bluetoothEnabledChecker: Provider<BluetoothEnabledChecker>,
         private val locationPermissionChecker: Provider<LocationPermissionChecker>,
-        private val connectionStateMachine: Provider<ConnectionStateMachine>
+        private val connectionStateMachine: Provider<ConnectionStateMachine>,
+        private val droidDao: Provider<DroidDao>
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return DroidConnectViewModel(
-                droidConnectionManager.get(), bleScanner.get(), bluetoothEnabledChecker.get(), locationPermissionChecker.get(), connectionStateMachine.get()
+                droidConnectionManager.get(),
+                bleScanner.get(),
+                bluetoothEnabledChecker.get(),
+                locationPermissionChecker.get(),
+                connectionStateMachine.get(),
+                droidDao.get()
             ) as T
         }
     }

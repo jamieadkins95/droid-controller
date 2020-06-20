@@ -36,6 +36,10 @@ dependencies {
     implementation Libs.nav_component_fragment
     implementation Libs.nav_component_ui
 
+    implementation Libs.room
+    implementation Libs.room_rx
+    kapt Libs.room_compiler
+
 //    implementation Libs.firebase_analytics TODO Uncomment when firebase is setup
 //    implementation Libs.firebase_crashlytics
 

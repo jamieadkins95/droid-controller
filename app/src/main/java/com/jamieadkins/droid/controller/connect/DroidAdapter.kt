@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.jamieadkins.droid.controller.databinding.RowDroidBinding
+import com.jamieadkins.droid.controller.droid.Droid
 
 class DroidAdapter(
     private val onDroidClicked: (Droid) -> Unit
@@ -39,11 +40,3 @@ class DroidAdapter(
         }
     }
 }
-
-
-
-data class Droid(
-    val address: String,
-    val name: String,
-    val type: String
-)
