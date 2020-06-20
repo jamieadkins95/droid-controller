@@ -26,6 +26,8 @@ class DroidConnectViewModel(
     private val compositeDisposable = CompositeDisposable()
     private val _scanState = MutableLiveData<ConnectionState>()
     val scanState: LiveData<ConnectionState> get() = _scanState
+    private val _previousDroids = MutableLiveData<List<Droid>>()
+    val previousDroids: LiveData<List<Droid>> get() = _previousDroids
 
     init {
         scanRequests.switchMap { scanAndConnect() }
@@ -51,6 +53,8 @@ class DroidConnectViewModel(
                 }
             }
             .addToComposite(compositeDisposable)
+
+        _previousDroids.value = listOf(Droid("DE:84:98:66:34:63", "J4-R5", "r"))
     }
 
     override fun onCleared() {

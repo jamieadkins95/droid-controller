@@ -15,6 +15,8 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import com.airbnb.lottie.LottieDrawable
 import com.jamieadkins.droid.controller.R
 import com.jamieadkins.droid.controller.databinding.FragmentConnectBinding
 import com.jamieadkins.droid.controller.name.NameDroidFragment
@@ -28,6 +30,8 @@ class ConnectFragment : DaggerFragment() {
 
     @Inject lateinit var factory: DroidConnectViewModel.Factory
     private lateinit var viewModel: DroidConnectViewModel
+
+    private val droidAdapter = DroidAdapter { viewModel.onDroidSelected(it.address) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +55,12 @@ class ConnectFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding?.toolbar?.let { (activity as? AppCompatActivity)?.setSupportActionBar(it) }
         binding?.scan?.setOnClickListener { viewModel.scan() }
-        viewModel.scanState.observe(viewLifecycleOwner, Observer<ConnectionState> { state ->
+        binding?.previousDroids?.apply {
+            adapter = droidAdapter
+            addItemDecoration(VerticalSpaceItemDecoration(8))
+        }
+        viewModel.previousDroids.observe(viewLifecycleOwner, Observer { droids -> droidAdapter.submitList(droids) })
+        viewModel.scanState.observe(viewLifecycleOwner, Observer { state ->
             when (state) {
                 is ConnectionState.Disconnected -> {
                     binding?.scan?.setText(R.string.scan_for_droids)
@@ -77,7 +86,8 @@ class ConnectFragment : DaggerFragment() {
                     hideBluetoothPrompt()
                     hideLocationPrompt()
                 }
-                is ConnectionState.Connecting -> {
+                is ConnectionState.Connecting,
+                is ConnectionState.ConnectedWithoutHandshake -> {
                     binding?.scan?.setText(R.string.connecting)
                     disableScanButton()
                     showScanningIndicator()
@@ -103,7 +113,7 @@ class ConnectFragment : DaggerFragment() {
     }
 
     private fun showScanningIndicator() {
-        binding?.animationView?.repeatCount = ValueAnimator.INFINITE
+        binding?.animationView?.repeatCount = LottieDrawable.INFINITE
         binding?.animationView?.resumeAnimation()
     }
 

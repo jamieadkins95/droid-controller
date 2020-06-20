@@ -12,15 +12,15 @@ class ConnectionStateMachine {
         initialState(ConnectionState.Disconnected())
         state<ConnectionState.Disconnected> {
             on<ConnectionEvent.StartScan> { transitionTo(ConnectionState.Scanning) }
-            on<ConnectionEvent.DroidSelected> { event -> transitionTo(ConnectionState.Connecting(event.address)) }
-            on<ConnectionEvent.DroidNamed> { event -> transitionTo(ConnectionState.Connecting(event.address)) }
+            on<ConnectionEvent.DroidSelected> { event -> transitionTo(ConnectionState.Connecting(event.address), ConnectionSideEffect.ConnectToDroid(event.address)) }
+            on<ConnectionEvent.DroidNamed> { event -> transitionTo(ConnectionState.Connecting(event.address), ConnectionSideEffect.ConnectToDroid(event.address)) }
             on<ConnectionEvent.BluetoothDisabled> { transitionTo(ConnectionState.Disconnected(bluetoothDisabled = true)) }
             on<ConnectionEvent.LocationPermissionNotGranted> { transitionTo(ConnectionState.Disconnected(locationDisabled = true)) }
         }
         state<ConnectionState.Scanning> {
             on<ConnectionEvent.UnnamedDroidFound> { event -> transitionTo(ConnectionState.Naming(event.address)) }
-            on<ConnectionEvent.NamedDroidFound> { event -> transitionTo(ConnectionState.Connecting(event.address)) }
-            on<ConnectionEvent.DroidSelected> { event -> transitionTo(ConnectionState.Connecting(event.address)) }
+            on<ConnectionEvent.NamedDroidFound> { event -> transitionTo(ConnectionState.Connecting(event.address), ConnectionSideEffect.ConnectToDroid(event.address)) }
+            on<ConnectionEvent.DroidSelected> { event -> transitionTo(ConnectionState.Connecting(event.address), ConnectionSideEffect.ConnectToDroid(event.address)) }
             on<ConnectionEvent.BluetoothDisabled> { transitionTo(ConnectionState.Disconnected(bluetoothDisabled = true)) }
             on<ConnectionEvent.LocationPermissionNotGranted> { transitionTo(ConnectionState.Disconnected(locationDisabled = true)) }
             on<ConnectionEvent.Failure> { transitionTo(ConnectionState.Disconnected()) }
@@ -60,7 +60,7 @@ class ConnectionStateMachine {
         }
         onTransition {
             val validTransition = it as? StateMachine.Transition.Valid ?: return@onTransition
-            Timber.d("From: ${it.fromState}, To: ${it.toState}, Event: ${it.event}")
+            Timber.d("From: ${it.fromState}, To: ${it.toState}, Event: ${it.event}, Side Effect: ${it.sideEffect}")
             currentState.onNext(validTransition.toState)
             validTransition.sideEffect?.let(sideEffects::onNext)
         }

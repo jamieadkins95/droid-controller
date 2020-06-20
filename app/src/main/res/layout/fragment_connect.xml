@@ -66,6 +66,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bluetooth_error" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/previous_droids"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="12dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/location_error"
+            app:layout_constraintBottom_toTopOf="@id/timeout_info" />
+
         <ImageView
             android:id="@+id/info2"
             android:layout_width="24dp"
