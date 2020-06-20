@@ -17,7 +17,7 @@ class BleScanner @Inject constructor(private val scanner: BluetoothLeScanner?) {
                 override fun onScanResult(callbackType: Int, result: ScanResult?) {
                     val device = result?.device
                     Timber.d("Device Name: ${device?.name} Device Address: ${device?.address}")
-                    val found = device?.address?.let(ScanState::DroidFound) ?: ScanState.ScanFailed
+                    val found = device?.address?.let(ScanState::UnnamedDroidFound) ?: ScanState.ScanFailed
                     emitter.onNext(found)
                 }
 

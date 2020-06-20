@@ -3,7 +3,7 @@ object Versions {
     const val min_sdk = 21
     const val target_sdk = 29
 
-    const val gradle_plugin = "4.0.0-beta05"
+    const val gradle_plugin = "4.0.0"
     const val kotlin = "1.3.61"
 
     const val app_version_name = "0.2.0"

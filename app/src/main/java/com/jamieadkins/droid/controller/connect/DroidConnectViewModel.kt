@@ -51,7 +51,7 @@ class DroidConnectViewModel(
             .switchIfEmpty(bleScanner.scan())
             .distinctUntilChanged()
             .switchMap { state ->
-                if (state is ScanState.DroidFound) {
+                if (state is ScanState.NamedDroidFound) {
                     droidConnectionManager.connect(state.address)
                     droidConnectionManager.observe()
                         .map { connection -> if (connection is ConnectionState.Connected) ScanState.Connected(state.address) else state }

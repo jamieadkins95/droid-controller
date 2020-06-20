@@ -47,6 +47,7 @@
     <string name="menu_stop">Stop</string>
     <string name="custom_command">Commands</string>
     <string name="start">Start</string>
+    <string name="ok">OK</string>
     <string name="playing">Playing</string>
     <string name="cancel">Cancel</string>
     <string name="import_from_file">Import</string>
@@ -71,4 +72,8 @@
     <string name="reaction6">Reaction 6</string>
     <string name="reaction7">Reaction 7</string>
     <string name="reaction8">Reaction 8</string>
+
+    <string name="droid_name">Droid Name</string>
+    <string name="r_unit">R Unit</string>
+    <string name="bb_unit">BB Unit</string>
 </resources>

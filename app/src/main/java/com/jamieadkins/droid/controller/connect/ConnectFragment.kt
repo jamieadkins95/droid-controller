@@ -13,9 +13,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.jamieadkins.droid.controller.controls.DroidConnectionViewModel
 import com.jamieadkins.droid.controller.R
+import com.jamieadkins.droid.controller.controls.advanced.AdvancedControlsFragment
 import com.jamieadkins.droid.controller.databinding.FragmentConnectBinding
+import com.jamieadkins.droid.controller.name.NameDroidFragment
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -71,7 +72,15 @@ class ConnectFragment : DaggerFragment() {
                     hideBluetoothPrompt()
                     hideLocationPrompt()
                 }
-                is ScanState.DroidFound -> {
+                is ScanState.UnnamedDroidFound -> {
+                    val dialog = NameDroidFragment()
+                    dialog.show(requireActivity().supportFragmentManager, "name")
+                    disableScanButton()
+                    showScanningIndicator()
+                    hideBluetoothPrompt()
+                    hideLocationPrompt()
+                }
+                is ScanState.NamedDroidFound -> {
                     binding?.scan?.setText(R.string.connecting)
                     disableScanButton()
                     showScanningIndicator()
