@@ -52,4 +52,5 @@ dependencies {
     implementation Libs.coil
     implementation Libs.lottie
     implementation Libs.joystick
+    implementation Libs.stateMachine
 }

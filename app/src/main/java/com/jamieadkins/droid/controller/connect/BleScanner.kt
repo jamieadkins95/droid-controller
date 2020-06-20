@@ -11,19 +11,19 @@ import javax.inject.Inject
 
 class BleScanner @Inject constructor(private val scanner: BluetoothLeScanner?) {
 
-    fun scan(): Observable<ScanState> {
+    fun scan(): Observable<ConnectionEvent> {
         return Observable.create { emitter ->
             val scanCallback = object : ScanCallback() {
                 override fun onScanResult(callbackType: Int, result: ScanResult?) {
                     val device = result?.device
                     Timber.d("Device Name: ${device?.name} Device Address: ${device?.address}")
-                    val found = device?.address?.let(ScanState::UnnamedDroidFound) ?: ScanState.ScanFailed
+                    val found = device?.address?.let(ConnectionEvent::UnnamedDroidFound) ?: ConnectionEvent.Failure
                     emitter.onNext(found)
                 }
 
                 override fun onScanFailed(errorCode: Int) {
                     Timber.e("Scan Failed: $errorCode")
-                    emitter.onNext(ScanState.ScanFailed)
+                    emitter.onNext(ConnectionEvent.Failure)
                 }
             }
 
@@ -31,8 +31,8 @@ class BleScanner @Inject constructor(private val scanner: BluetoothLeScanner?) {
                 ScanFilter.Builder().setDeviceName("DROID").build()
             )
             val settings = ScanSettings.Builder().build()
-            scanner?.startScan(filters, settings, scanCallback) ?: emitter.onNext(ScanState.ScanFailed)
-            emitter.onNext(ScanState.Scanning)
+            scanner?.startScan(filters, settings, scanCallback) ?: emitter.onNext(ConnectionEvent.Failure)
+            emitter.onNext(ConnectionEvent.StartScan)
 
             emitter.setCancellable { scanner?.stopScan(scanCallback) }
         }

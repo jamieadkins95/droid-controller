@@ -2,12 +2,13 @@ package com.jamieadkins.droid.controller.di
 
 import android.content.Context
 import com.jamieadkins.droid.controller.DroidApplication
+import com.jamieadkins.droid.controller.connect.ConnectionStateMachine
 import com.jamieadkins.droid.controller.controls.DroidConnectionManager
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
 
-@Component(modules = [])
+@Component(modules = [StateMachineModule::class])
 @Singleton
 interface CoreComponent {
 
@@ -15,6 +16,8 @@ interface CoreComponent {
     fun exposeContext(): Context
 
     fun exposeDroidManager(): DroidConnectionManager
+
+    fun exposeStateMachine(): ConnectionStateMachine
 
     fun inject(target: DroidApplication)
 

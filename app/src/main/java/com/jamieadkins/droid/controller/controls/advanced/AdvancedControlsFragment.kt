@@ -9,7 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.jamieadkins.droid.controller.R
-import com.jamieadkins.droid.controller.controls.ConnectionState
+import com.jamieadkins.droid.controller.connect.ConnectionState
 import com.jamieadkins.droid.controller.databinding.FragmentAdvancedControlsBinding
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
@@ -52,8 +52,8 @@ class AdvancedControlsFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.connectionState.observe(viewLifecycleOwner, Observer<ConnectionState> { state ->
             when (state) {
-                ConnectionState.Disconnected -> dismiss()
-                ConnectionState.ConnectedWithoutHandshake -> {
+                is ConnectionState.Disconnected -> dismiss()
+                is ConnectionState.ConnectedWithoutHandshake -> {
                     binding?.start?.isEnabled = false
                     binding?.start?.setText(R.string.start)
                     binding?.cancel?.visibility = View.GONE

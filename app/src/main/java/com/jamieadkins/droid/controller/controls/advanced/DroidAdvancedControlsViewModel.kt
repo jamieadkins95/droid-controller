@@ -5,7 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.jamieadkins.droid.controller.addToComposite
-import com.jamieadkins.droid.controller.controls.ConnectionState
+import com.jamieadkins.droid.controller.connect.ConnectionState
+import com.jamieadkins.droid.controller.connect.ConnectionStateMachine
 import com.jamieadkins.droid.controller.controls.DroidConnectionManager
 import com.jamieadkins.droid.controller.controls.DroidService
 import io.reactivex.Observable
@@ -16,7 +17,8 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class DroidAdvancedControlsViewModel(
-    private val droidConnectionManager: DroidConnectionManager
+    private val droidConnectionManager: DroidConnectionManager,
+    private val connectionStateMachine: ConnectionStateMachine
 ) : ViewModel(), DroidService by droidConnectionManager {
 
     private val compositeDisposable = CompositeDisposable()
@@ -35,17 +37,18 @@ class DroidAdvancedControlsViewModel(
     }
 
     private fun observeDroidConnection(): Observable<ConnectionState> {
-        return droidConnectionManager.observe()
+        return connectionStateMachine.observe()
             .distinctUntilChanged()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
     }
 
     class Factory @Inject constructor(
-        private val droidConnectionManager: Provider<DroidConnectionManager>
+        private val droidConnectionManager: Provider<DroidConnectionManager>,
+        private val stateMachine: Provider<ConnectionStateMachine>
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return DroidAdvancedControlsViewModel(droidConnectionManager.get()) as T
+            return DroidAdvancedControlsViewModel(droidConnectionManager.get(), stateMachine.get()) as T
         }
     }
 

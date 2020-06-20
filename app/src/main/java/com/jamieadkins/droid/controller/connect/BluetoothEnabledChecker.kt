@@ -6,10 +6,10 @@ import javax.inject.Inject
 
 class BluetoothEnabledChecker @Inject constructor(private val adapter: BluetoothAdapter?) {
 
-    fun checkBluetoothEnabled(): Maybe<ScanState> {
+    fun checkBluetoothEnabled(): Maybe<ConnectionEvent> {
         return Maybe.fromCallable {
             val enabled = adapter?.isEnabled ?: false
-            ScanState.BluetoothDisabled.takeIf { !enabled }
+            ConnectionEvent.BluetoothDisabled.takeIf { !enabled }
         }
     }
 }

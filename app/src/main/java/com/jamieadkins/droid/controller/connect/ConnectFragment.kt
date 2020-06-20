@@ -10,14 +10,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.jamieadkins.droid.controller.R
-import com.jamieadkins.droid.controller.controls.advanced.AdvancedControlsFragment
 import com.jamieadkins.droid.controller.databinding.FragmentConnectBinding
 import com.jamieadkins.droid.controller.name.NameDroidFragment
 import dagger.android.support.DaggerFragment
+import timber.log.Timber
 import javax.inject.Inject
 
 class ConnectFragment : DaggerFragment() {
@@ -30,6 +32,13 @@ class ConnectFragment : DaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(viewModelStore, factory).get(DroidConnectViewModel::class.java)
+
+        setFragmentResultListener("name") { key, bundle ->
+            val name = bundle.getString("name") ?: ""
+            val droidType = bundle.getString("type") ?: "r"
+            val address = bundle.getString("address")!!
+            viewModel.onDroidNamed(name, address, droidType)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -42,52 +51,40 @@ class ConnectFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding?.toolbar?.let { (activity as? AppCompatActivity)?.setSupportActionBar(it) }
         binding?.scan?.setOnClickListener { viewModel.scan() }
-        viewModel.scanState.observe(viewLifecycleOwner, Observer<ScanState> { state ->
+        viewModel.scanState.observe(viewLifecycleOwner, Observer<ConnectionState> { state ->
             when (state) {
-                ScanState.BluetoothDisabled -> {
+                is ConnectionState.Disconnected -> {
                     binding?.scan?.setText(R.string.scan_for_droids)
                     enableScanButton()
                     hideScanningIndicator()
-                    showBluetoothPrompt()
-                    hideLocationPrompt()
+                    if (state.bluetoothDisabled) showBluetoothPrompt() else hideBluetoothPrompt()
+                    if (state.locationDisabled) showLocationPrompt() else hideLocationPrompt()
                 }
-                ScanState.LocationPermissionNotGranted -> {
-                    binding?.scan?.setText(R.string.scan_for_droids)
-                    enableScanButton()
-                    hideScanningIndicator()
-                    showLocationPrompt()
-                    hideBluetoothPrompt()
-                }
-                ScanState.Scanning -> {
+                ConnectionState.Scanning -> {
                     binding?.scan?.setText(R.string.scanning)
                     disableScanButton()
                     showScanningIndicator()
                     hideBluetoothPrompt()
                     hideLocationPrompt()
                 }
-                ScanState.ScanFailed -> {
-                    binding?.scan?.setText(R.string.scan_for_droids)
-                    enableScanButton()
-                    hideScanningIndicator()
-                    hideBluetoothPrompt()
-                    hideLocationPrompt()
-                }
-                is ScanState.UnnamedDroidFound -> {
-                    val dialog = NameDroidFragment()
-                    dialog.show(requireActivity().supportFragmentManager, "name")
+                is ConnectionState.Naming -> {
+                    val dialog = NameDroidFragment().apply {
+                        arguments = bundleOf("address" to state.address)
+                    }
+                    dialog.show(parentFragmentManager, "name")
                     disableScanButton()
                     showScanningIndicator()
                     hideBluetoothPrompt()
                     hideLocationPrompt()
                 }
-                is ScanState.NamedDroidFound -> {
+                is ConnectionState.Connecting -> {
                     binding?.scan?.setText(R.string.connecting)
                     disableScanButton()
                     showScanningIndicator()
                     hideBluetoothPrompt()
                     hideLocationPrompt()
                 }
-                is ScanState.Connected -> {
+                is ConnectionState.Connected -> {
                     binding?.scan?.setText(R.string.connected)
                     disableScanButton()
                     hideScanningIndicator()

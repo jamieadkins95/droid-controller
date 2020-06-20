@@ -55,6 +55,7 @@ object Libs {
     const val groupie_extensions = "com.xwray:groupie-kotlin-android-extensions:${Versions.groupie}"
     const val lottie = "com.airbnb.android:lottie:3.4.0"
     const val joystick = "io.github.controlwear:virtualjoystick:1.10.1"
+    const val stateMachine = "com.tinder.statemachine:statemachine:0.2.0"
 
     // Logging
     const val timber = "com.jakewharton.timber:timber:${Versions.timber}"

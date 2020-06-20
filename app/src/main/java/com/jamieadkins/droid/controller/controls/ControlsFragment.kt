@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.jamieadkins.droid.controller.R
+import com.jamieadkins.droid.controller.connect.ConnectionState
 import com.jamieadkins.droid.controller.controls.advanced.AdvancedControlsFragment
 import com.jamieadkins.droid.controller.databinding.FragmentControlsBinding
 import dagger.android.support.DaggerFragment
@@ -106,7 +107,6 @@ class ControlsFragment : DaggerFragment() {
         return when (item.itemId) {
             android.R.id.home -> {
                 viewModel.disconnect()
-                findNavController().navigate(ControlsFragmentDirections.toScan())
                 true
             }
             R.id.menu_joystick -> {

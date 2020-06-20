@@ -10,10 +10,10 @@ import javax.inject.Inject
 
 class LocationPermissionChecker @Inject constructor(@ApplicationContext private val context: Context) {
 
-    fun checkLocationPermission(): Maybe<ScanState> {
+    fun checkLocationPermission(): Maybe<ConnectionEvent> {
         return Maybe.fromCallable {
             val granted = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-            ScanState.LocationPermissionNotGranted.takeIf { !granted }
+            ConnectionEvent.LocationPermissionNotGranted.takeIf { !granted }
         }
     }
 }
