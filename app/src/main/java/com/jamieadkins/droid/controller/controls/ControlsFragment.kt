@@ -19,6 +19,7 @@ import com.jamieadkins.droid.controller.R
 import com.jamieadkins.droid.controller.connect.ConnectionState
 import com.jamieadkins.droid.controller.controls.advanced.AdvancedControlsFragment
 import com.jamieadkins.droid.controller.databinding.FragmentControlsBinding
+import com.jamieadkins.droid.controller.droid.DroidType
 import dagger.android.support.DaggerFragment
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
@@ -62,27 +63,19 @@ class ControlsFragment : DaggerFragment() {
         })
 
         viewModel.headTurnEnabled.observe(viewLifecycleOwner, Observer { enabled ->
-            if (enabled) {
-                binding?.headLeft?.setOnClickListener(null)
-                binding?.headLeft?.setOnTouchListener { _, event ->
-                    onButtonTouch(event, DroidAction.HeadLeft(binding?.speed?.value?.toInt() ?: 0), DroidAction.HeadLeft(0))
-                }
-                binding?.headRight?.setOnClickListener(null)
-                binding?.headRight?.setOnTouchListener { _, event ->
-                    onButtonTouch(event, DroidAction.HeadRight(binding?.speed?.value?.toInt() ?: 0), DroidAction.HeadRight(0))
-                }
-            } else {
-                binding?.headLeft?.setOnTouchListener(null)
-                binding?.headLeft?.setOnClickListener { Toast.makeText(view.context, R.string.head_turning, Toast.LENGTH_SHORT).show() }
-                binding?.headRight?.setOnTouchListener(null)
-                binding?.headRight?.setOnClickListener { Toast.makeText(view.context, R.string.head_turning, Toast.LENGTH_SHORT).show() }
+            binding?.headLeft?.visibility = if (enabled) View.VISIBLE else View.INVISIBLE
+            binding?.headLeft?.setOnTouchListener { _, event ->
+                onButtonTouch(event, DroidAction.HeadLeft(binding?.speed?.value?.toInt() ?: 0), DroidAction.HeadLeft(0))
+            }
+            binding?.headRight?.visibility = if (enabled) View.VISIBLE else View.INVISIBLE
+            binding?.headRight?.setOnTouchListener { _, event ->
+                onButtonTouch(event, DroidAction.HeadRight(binding?.speed?.value?.toInt() ?: 0), DroidAction.HeadRight(0))
             }
         })
 
         viewModel.droidName.observe(viewLifecycleOwner, Observer { name -> binding?.toolbar?.title = name })
 
-        viewModel.droidType.observe(viewLifecycleOwner, Observer { type ->
-            val offset = if (type == "r") 0 else 8 // R Unit Droids are reactions 1-8, BB is 9-16
+        viewModel.reactionsOffset.observe(viewLifecycleOwner, Observer { offset ->
             binding?.reaction1?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(1 + offset)) }
             binding?.reaction2?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(2 + offset)) }
             binding?.reaction3?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(3 + offset)) }

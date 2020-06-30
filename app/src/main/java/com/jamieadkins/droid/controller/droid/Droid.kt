@@ -8,5 +8,5 @@ import androidx.room.PrimaryKey
 data class Droid(
     @PrimaryKey @ColumnInfo(name = "address") val address: String,
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "type") val type: String
+    @ColumnInfo(name = "type") val type: DroidType
 )

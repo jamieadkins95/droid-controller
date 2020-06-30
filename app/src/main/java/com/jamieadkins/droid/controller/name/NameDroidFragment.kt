@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.jamieadkins.droid.controller.R
 import com.jamieadkins.droid.controller.databinding.FragmentNameDroidBinding
+import com.jamieadkins.droid.controller.droid.DroidType
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
@@ -42,7 +43,7 @@ class NameDroidFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding?.ok?.setOnClickListener {
             val name = binding?.input?.text?.toString() ?: ""
-            val type = if (binding?.droidType?.checkedChipId == R.id.r_unit) "r" else "bb"
+            val type = if (binding?.droidType?.checkedChipId == R.id.r_unit) DroidType.RUnit else DroidType.BBUnit
             val address = arguments?.getString("address")!!
             viewModel.nameDroid(address, name, type)
 

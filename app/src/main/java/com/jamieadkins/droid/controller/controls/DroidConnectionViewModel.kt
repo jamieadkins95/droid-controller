@@ -10,6 +10,7 @@ import com.jamieadkins.droid.controller.connect.ConnectionState
 import com.jamieadkins.droid.controller.connect.ConnectionStateMachine
 import com.jamieadkins.droid.controller.droid.Droid
 import com.jamieadkins.droid.controller.droid.DroidDao
+import com.jamieadkins.droid.controller.droid.DroidType
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -29,8 +30,8 @@ class DroidConnectionViewModel(
     private val droidAddress = Transformations.map(connectionState) { state -> (state as? ConnectionState.Connected)?.address }
     private val distinctDroidAddress = Transformations.distinctUntilChanged(droidAddress)
     private val droid = Transformations.switchMap(distinctDroidAddress) { address -> address?.let(droidDao::getDroid) ?: MutableLiveData() }
-    val headTurnEnabled: LiveData<Boolean> = Transformations.map(droid) { droid -> droid.type == "r" }
-    val droidType: LiveData<String> = Transformations.map(droid) { droid -> droid.type }
+    val headTurnEnabled: LiveData<Boolean> = Transformations.map(droid) { droid -> droid.type == DroidType.RUnit }
+    val reactionsOffset: LiveData<Int> = Transformations.map(droid) { droid -> if (droid.type == DroidType.RUnit) 0 else 8 } // R Unit Droids are reactions 1-8, BB is 9-16
     val droidName: LiveData<String> = Transformations.map(droid) { droid -> droid.name }
 
     init {
