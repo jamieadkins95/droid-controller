@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
@@ -60,6 +61,38 @@ class ControlsFragment : DaggerFragment() {
             }
         })
 
+        viewModel.headTurnEnabled.observe(viewLifecycleOwner, Observer { enabled ->
+            if (enabled) {
+                binding?.headLeft?.setOnClickListener(null)
+                binding?.headLeft?.setOnTouchListener { _, event ->
+                    onButtonTouch(event, DroidAction.HeadLeft(binding?.speed?.value?.toInt() ?: 0), DroidAction.HeadLeft(0))
+                }
+                binding?.headRight?.setOnClickListener(null)
+                binding?.headRight?.setOnTouchListener { _, event ->
+                    onButtonTouch(event, DroidAction.HeadRight(binding?.speed?.value?.toInt() ?: 0), DroidAction.HeadRight(0))
+                }
+            } else {
+                binding?.headLeft?.setOnTouchListener(null)
+                binding?.headLeft?.setOnClickListener { Toast.makeText(view.context, R.string.head_turning, Toast.LENGTH_SHORT).show() }
+                binding?.headRight?.setOnTouchListener(null)
+                binding?.headRight?.setOnClickListener { Toast.makeText(view.context, R.string.head_turning, Toast.LENGTH_SHORT).show() }
+            }
+        })
+
+        viewModel.droidName.observe(viewLifecycleOwner, Observer { name -> binding?.toolbar?.title = name })
+
+        viewModel.droidType.observe(viewLifecycleOwner, Observer { type ->
+            val offset = if (type == "r") 0 else 8 // R Unit Droids are reactions 1-8, BB is 9-16
+            binding?.reaction1?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(1 + offset)) }
+            binding?.reaction2?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(2 + offset)) }
+            binding?.reaction3?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(3 + offset)) }
+            binding?.reaction4?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(4 + offset)) }
+            binding?.reaction5?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(5 + offset)) }
+            binding?.reaction6?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(6 + offset)) }
+            binding?.reaction7?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(7 + offset)) }
+            binding?.reaction8?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(8 + offset)) }
+        })
+
         binding?.toolbar?.let {
             val activity = activity as? AppCompatActivity
             activity?.setSupportActionBar(it)
@@ -68,26 +101,12 @@ class ControlsFragment : DaggerFragment() {
         }
         binding?.identify?.setOnClickListener { viewModel.sendCommand(DroidAction.Identify) }
         binding?.blaster?.setOnClickListener { viewModel.sendCommand(DroidAction.BlasterSound) }
-        binding?.reaction1?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(1)) }
-        binding?.reaction2?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(2)) }
-        binding?.reaction3?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(3)) }
-        binding?.reaction4?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(4)) }
-        binding?.reaction5?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(5)) }
-        binding?.reaction6?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(6)) }
-        binding?.reaction7?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(7)) }
-        binding?.reaction8?.setOnClickListener { viewModel.sendCommand(DroidAction.Reaction(8)) }
         binding?.volume?.addOnChangeListener { _, value, _ -> viewModel.sendCommand(DroidAction.Volume(value.toInt())) }
         binding?.forward?.setOnTouchListener { _, event ->
             onButtonTouch(event, DroidAction.Forward(binding?.speed?.value?.toInt() ?: 0), DroidAction.Forward(0))
         }
         binding?.backwards?.setOnTouchListener { _, event ->
             onButtonTouch(event, DroidAction.Backwards(binding?.speed?.value?.toInt() ?: 0), DroidAction.Backwards(0))
-        }
-        binding?.headLeft?.setOnTouchListener { _, event ->
-            onButtonTouch(event, DroidAction.HeadLeft(binding?.speed?.value?.toInt() ?: 0), DroidAction.HeadLeft(0))
-        }
-        binding?.headRight?.setOnTouchListener { _, event ->
-            onButtonTouch(event, DroidAction.HeadRight(binding?.speed?.value?.toInt() ?: 0), DroidAction.HeadRight(0))
         }
         binding?.left?.setOnTouchListener { _, event ->
             onButtonTouch(event, DroidAction.Left(binding?.speed?.value?.toInt() ?: 0), DroidAction.Left(0))

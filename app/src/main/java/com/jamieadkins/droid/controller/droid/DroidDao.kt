@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
 
 @Dao
@@ -19,4 +20,7 @@ interface DroidDao {
 
     @Query("SELECT COUNT(*) from droids WHERE address = :address")
     fun doesDroidExist(address: String) : Single<Int>
+
+    @Query("SELECT * from droids WHERE address = :address")
+    fun getDroid(address: String) : LiveData<Droid>
 }

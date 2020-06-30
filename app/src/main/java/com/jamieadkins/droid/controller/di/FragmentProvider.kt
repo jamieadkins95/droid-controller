@@ -23,7 +23,7 @@ abstract class FragmentProvider {
     @ContributesAndroidInjector(modules = [SetupModule::class])
     abstract fun setup(): SetupFragment
 
-    @ContributesAndroidInjector
+    @ContributesAndroidInjector(modules = [DroidDbModule::class])
     abstract fun controls(): ControlsFragment
 
     @ContributesAndroidInjector

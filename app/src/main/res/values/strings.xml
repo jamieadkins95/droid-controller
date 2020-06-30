@@ -76,4 +76,6 @@
     <string name="droid_name">Droid Name</string>
     <string name="r_unit">R Unit</string>
     <string name="bb_unit">BB Unit</string>
+
+    <string name="head_turning">Head turning is only available on R Units</string>
 </resources>
