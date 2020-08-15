@@ -6,8 +6,8 @@ object Versions {
     const val gradle_plugin = "4.0.0"
     const val kotlin = "1.3.61"
 
-    const val app_version_name = "0.4.0"
-    const val app_version_code = 4
+    const val app_version_name = "0.5.0"
+    const val app_version_code = 5
 
     const val androidx_core = "1.2.0"
     const val androidx_appcompat = "1.1.0"
