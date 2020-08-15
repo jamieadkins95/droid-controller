@@ -1,10 +1,14 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-// apply plugin: 'com.google.gms.google-services' TODO Uncomment when firebase is setup
-// apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'androidx.navigation.safeargs'
 apply from: '../test-dependencies.gradle'
+
+if (getGradle().getStartParameter().getTaskRequests().toString().contains("Release")) {
+    // Only add google services plugin to release versions
+    apply plugin: 'com.google.gms.google-services'
+    apply plugin: 'com.google.firebase.crashlytics'
+}
 
 android {
     compileSdkVersion Versions.compile_sdk
@@ -40,8 +44,8 @@ dependencies {
     implementation Libs.room_rx
     kapt Libs.room_compiler
 
-//    implementation Libs.firebase_analytics TODO Uncomment when firebase is setup
-//    implementation Libs.firebase_crashlytics
+    releaseImplementation Libs.firebase_analytics
+    releaseImplementation Libs.firebase_crashlytics
 
     implementation Libs.dagger
     implementation Libs.dagger_support
