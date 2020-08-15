@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
@@ -19,7 +18,7 @@ import com.jamieadkins.droid.controller.R
 import com.jamieadkins.droid.controller.connect.ConnectionState
 import com.jamieadkins.droid.controller.controls.advanced.AdvancedControlsFragment
 import com.jamieadkins.droid.controller.databinding.FragmentControlsBinding
-import com.jamieadkins.droid.controller.droid.DroidType
+import com.jamieadkins.droid.controller.help.GetDeviceInfo
 import dagger.android.support.DaggerFragment
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
@@ -134,6 +133,10 @@ class ControlsFragment : DaggerFragment() {
             R.id.menu_advanced -> {
                 val dialog = AdvancedControlsFragment()
                 dialog.show(requireActivity().supportFragmentManager, "advanced")
+                true
+            }
+            R.id.menu_help -> {
+                requireActivity().startActivity(GetDeviceInfo.getHelpIntent(requireActivity()))
                 true
             }
             else -> super.onOptionsItemSelected(item)

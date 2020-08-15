@@ -41,9 +41,16 @@
         </menu>
     </item>
 
+    <item android:id="@+id/menu_help"
+        android:visible="true"
+        android:orderInCategory="1"
+        android:icon="@drawable/ic_help_24"
+        android:title="@string/help"
+        app:showAsAction="ifRoom" />
+
     <item android:id="@+id/menu_advanced"
         android:visible="true"
-        android:orderInCategory="2"
+        android:orderInCategory="3"
         android:title="@string/advanced"
         app:showAsAction="never" />
 </menu>

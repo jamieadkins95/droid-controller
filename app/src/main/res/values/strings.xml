@@ -76,4 +76,11 @@
     <string name="droid_name">Droid Name</string>
     <string name="r_unit">R Unit</string>
     <string name="bb_unit">BB Unit</string>
+
+    <string name="help">Help</string>
+    <string name="having_trouble">Still having trouble?</string>
+    <string name="help_prompt">Contact Developer</string>
+    <string name="help_to">jamieadkins95+droid@gmail.com</string>
+    <string name="help_subject">Droid Controller Help</string>
+    <string name="help_template">Please describe what problem you are seeing.\n\nDevice Info:\n%s</string>
 </resources>

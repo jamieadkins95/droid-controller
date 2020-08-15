@@ -127,12 +127,24 @@
             android:textColor="?colorOnSurface"
             android:alpha="0.6"
             android:text="@string/connection_hint"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="12dp"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="24dp"
             app:layout_constraintVertical_bias="0"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/help"
             app:layout_constraintStart_toEndOf="@id/info1"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/help"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/having_trouble"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

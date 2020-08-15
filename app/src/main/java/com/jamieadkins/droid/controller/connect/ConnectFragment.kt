@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.airbnb.lottie.LottieDrawable
 import com.jamieadkins.droid.controller.R
 import com.jamieadkins.droid.controller.databinding.FragmentConnectBinding
+import com.jamieadkins.droid.controller.help.GetDeviceInfo
 import com.jamieadkins.droid.controller.name.NameDroidFragment
 import dagger.android.support.DaggerFragment
 import timber.log.Timber
@@ -61,6 +62,9 @@ class ConnectFragment : DaggerFragment() {
         binding?.previousDroids?.apply {
             adapter = droidAdapter
             addItemDecoration(VerticalSpaceItemDecoration(8))
+        }
+        binding?.help?.setOnClickListener {
+            requireActivity().startActivity(GetDeviceInfo.getHelpIntent(requireActivity()))
         }
         viewModel.previousDroids.observe(viewLifecycleOwner, Observer { droids -> droidAdapter.submitList(droids) })
         viewModel.scanState.observe(viewLifecycleOwner, Observer { state ->
