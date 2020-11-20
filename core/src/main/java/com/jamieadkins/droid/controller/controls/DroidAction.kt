@@ -41,12 +41,25 @@ sealed class DroidAction(val commands: List<String>) {
 
     data class Backwards(val power: Int) : DroidAction(listOf("2942 0546 81${power.to2DigitHexString()} 012C 0000", "2942 0546 80${power.to2DigitHexString()} 012C 0000"))
 
-    data class Left(val power: Int) : DroidAction(listOf("2942 0546 01${power.to2DigitHexString()} 012C 0000"))
+    data class Left(val power: Int) : DroidAction(listOf("2942 0546 0$RIGHT_MOTOR${power.to2DigitHexString()} 012C 0000"))
 
-    data class Right(val power: Int) : DroidAction(listOf("2942 0546 00${power.to2DigitHexString()} 012C 0000"))
+    data class Right(val power: Int) : DroidAction(listOf("2942 0546 0$LEFT_MOTOR${power.to2DigitHexString()} 012C 0000"))
 
-    data class HeadLeft(val power: Int) : DroidAction("2942 0546 02${power.to2DigitHexString()} 012C 0000")
+    data class HeadLeft(val power: Int) : DroidAction("2942 0546 0$HEAD_MOTOR${power.to2DigitHexString()} 012C 0000")
 
-    data class HeadRight(val power: Int) : DroidAction("2942 0546 82${power.to2DigitHexString()} 012C 0000")
+    data class HeadRight(val power: Int) : DroidAction("2942 0546 8$HEAD_MOTOR${power.to2DigitHexString()} 012C 0000")
+
+    data class MoveWithJoystick(val joystickOutput: JoystickOutput) : DroidAction(
+        listOf(
+            "2942 0546 ${joystickOutput.leftMotorDirection}$LEFT_MOTOR${joystickOutput.leftMotorPower.to2DigitHexString()} 012C 0000",
+            "2942 0546 ${joystickOutput.rightMotorDirection}$RIGHT_MOTOR${joystickOutput.rightMotorPower.to2DigitHexString()} 012C 0000"
+        )
+    )
+
+    companion object {
+        private const val LEFT_MOTOR = 0
+        private const val RIGHT_MOTOR = 1
+        private const val HEAD_MOTOR = 2
+    }
 
 }

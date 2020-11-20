@@ -258,6 +258,13 @@
             android:visibility="gone"
             tools:visibility="visible"
             app:constraint_referenced_ids="forward, backwards, left, right"/>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/speed_controls"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:visibility="visible"
+            app:constraint_referenced_ids="speed_text, speed"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -15,12 +15,17 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.jamieadkins.droid.controller.R
+import com.jamieadkins.droid.controller.addToComposite
 import com.jamieadkins.droid.controller.connect.ConnectionState
 import com.jamieadkins.droid.controller.controls.advanced.AdvancedControlsFragment
 import com.jamieadkins.droid.controller.databinding.FragmentControlsBinding
 import com.jamieadkins.droid.controller.help.GetDeviceInfo
 import dagger.android.support.DaggerFragment
+import io.github.controlwear.virtual.joystick.android.JoystickView
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.PublishSubject
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ControlsFragment : DaggerFragment() {
@@ -28,7 +33,9 @@ class ControlsFragment : DaggerFragment() {
     private var binding: FragmentControlsBinding? = null
     @Inject lateinit var factory: DroidConnectionViewModel.Factory
     private lateinit var viewModel: DroidConnectionViewModel
-    private var compositeDisposable = CompositeDisposable()
+
+    private val joystickInputs = PublishSubject.create<JoystickOutput>()
+    private val compositeDisposable = CompositeDisposable()
 
     private val joystickConstraints = ConstraintSet()
     private val buttonsConstraints = ConstraintSet()
@@ -107,8 +114,21 @@ class ControlsFragment : DaggerFragment() {
             onButtonTouch(event, DroidAction.Right(binding?.speed?.value?.toInt() ?: 0), DroidAction.Right(0))
         }
 
+        binding?.joystick?.setOnMoveListener { angle, strength ->
+            val output = JoystickCalculator.calculate(angle, strength)
+            joystickInputs.onNext(output)
+        }
+
+        joystickInputs.throttleLatest(50, TimeUnit.MILLISECONDS)
+            .subscribe {
+                viewModel.sendCommand(DroidAction.MoveWithJoystick(it))
+                Timber.e("JAMIEA $it")
+            }
+            .addToComposite(compositeDisposable)
+
         joystickConstraints.clone(binding?.constraintLayout)
         buttonsConstraints.clone(binding?.constraintLayout)
+        setupJoystickConstraints(joystickConstraints)
         setupButtonConstraints(buttonsConstraints)
         // Show button controls by default for now. Joystick is WIP
         binding?.constraintLayout?.let(buttonsConstraints::applyTo)
@@ -145,6 +165,7 @@ class ControlsFragment : DaggerFragment() {
 
     override fun onDestroyView() {
         binding = null
+        compositeDisposable.clear()
         super.onDestroyView()
     }
 
@@ -153,6 +174,13 @@ class ControlsFragment : DaggerFragment() {
         set.connect(R.id.head_left, ConstraintSet.BOTTOM, R.id.forward, ConstraintSet.BOTTOM)
         set.setVisibility(R.id.button_controls, View.VISIBLE)
         set.setVisibility(R.id.joystick, View.GONE)
+    }
+
+    private fun setupJoystickConstraints(set: ConstraintSet) {
+        set.connect(R.id.head_left, ConstraintSet.TOP, R.id.joystick, ConstraintSet.TOP)
+        set.connect(R.id.head_left, ConstraintSet.BOTTOM, R.id.joystick, ConstraintSet.BOTTOM)
+        set.setVisibility(R.id.button_controls, View.GONE)
+        set.setVisibility(R.id.joystick, View.VISIBLE)
     }
 
     private fun onButtonTouch(event: MotionEvent, downAction: DroidAction, upAction: DroidAction): Boolean {

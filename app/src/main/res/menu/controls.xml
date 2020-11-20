@@ -27,7 +27,7 @@
                 <item
                     android:id="@+id/menu_joystick"
                     android:orderInCategory="2"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:title="@string/joystick"
                     app:showAsAction="ifRoom" />
 

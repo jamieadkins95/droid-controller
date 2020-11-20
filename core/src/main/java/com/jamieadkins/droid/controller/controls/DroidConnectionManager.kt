@@ -84,7 +84,7 @@ class DroidConnectionManager @Inject constructor(
 
     fun initialise() {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        Observable.interval(5, TimeUnit.MILLISECONDS)
+        Observable.interval(30, TimeUnit.MILLISECONDS)
             .subscribe { commands.poll()?.let(::writeCharacteristic) }
             .addToComposite(compositeDisposable)
     }
