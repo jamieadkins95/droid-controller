@@ -34,7 +34,6 @@ subprojects {
 
                 defaultConfig {
                     targetSdkVersion Versions.target_sdk
-                    versionCode Versions.app_version_code
                     versionName Versions.app_version_name
                 }
 
