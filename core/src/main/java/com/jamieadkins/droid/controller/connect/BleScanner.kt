@@ -36,7 +36,9 @@ class BleScanner @Inject constructor(
                 ScanFilter.Builder().setDeviceName("DROID").build()
             )
             val settings = ScanSettings.Builder().build()
-            scanner?.startScan(filters, settings, scanCallback) ?: emitter.onNext(DroidScanResult.Error)
+            scanner?.startScan(filters, settings, scanCallback) ?: emitter.onNext(
+                DroidScanResult.Error
+            )
 
             emitter.setCancellable { scanner?.stopScan(scanCallback) }
         }
@@ -46,7 +48,10 @@ class BleScanner @Inject constructor(
                     val address = scanResult.address
                     droidDao.doesDroidExist(address)
                         .subscribeOn(Schedulers.io())
-                        .map { count -> if (count > 0) ConnectionEvent.NamedDroidFound(address) else ConnectionEvent.UnnamedDroidFound(address) }
+                        .map { count -> if (count > 0) ConnectionEvent.NamedDroidFound(
+                            address
+                        ) else ConnectionEvent.UnnamedDroidFound(address)
+                        }
                         .toObservable()
                 } else {
                     Observable.just(ConnectionEvent.Failure)

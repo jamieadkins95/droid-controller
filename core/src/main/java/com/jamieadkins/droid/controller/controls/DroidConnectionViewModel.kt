@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.jamieadkins.droid.controller.addToComposite
 import com.jamieadkins.droid.controller.connect.ConnectionState
 import com.jamieadkins.droid.controller.connect.ConnectionStateMachine
-import com.jamieadkins.droid.controller.droid.Droid
 import com.jamieadkins.droid.controller.droid.DroidDao
 import com.jamieadkins.droid.controller.droid.DroidType
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -55,7 +54,9 @@ class DroidConnectionViewModel(
         private val droidDao: Provider<DroidDao>
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return DroidConnectionViewModel(droidConnectionManager.get(), connectionStateMachine.get(), droidDao.get()) as T
+            return DroidConnectionViewModel(
+                droidConnectionManager.get(), connectionStateMachine.get(), droidDao.get()
+            ) as T
         }
     }
 

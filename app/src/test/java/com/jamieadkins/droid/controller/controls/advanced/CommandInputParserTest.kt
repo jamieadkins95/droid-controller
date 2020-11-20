@@ -45,7 +45,10 @@ class CommandInputParserTest {
     @Test
     fun `Multiple lines`() {
         assertEquals(
-            listOf(DroidActionWithDelay("1234", 100), DroidActionWithDelay("4321", 200)),
+            listOf(
+                DroidActionWithDelay("1234", 100),
+                DroidActionWithDelay("4321", 200)
+            ),
             inputParser.parseInput("1234, 100\n4321, 200")
         )
     }

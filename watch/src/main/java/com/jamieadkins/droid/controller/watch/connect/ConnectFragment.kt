@@ -1,35 +1,38 @@
-package com.jamieadkins.droid.controller.connect
+package com.jamieadkins.droid.controller.watch.connect
 
-import android.bluetooth.BluetoothAdapter
-import android.content.Intent
-import android.net.Uri
+import android.Manifest
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.airbnb.lottie.LottieDrawable
-import com.jamieadkins.droid.controller.R
-import com.jamieadkins.droid.controller.databinding.FragmentConnectBinding
-import com.jamieadkins.droid.controller.help.GetDeviceInfo
-import com.jamieadkins.droid.controller.name.NameDroidFragment
+import com.jamieadkins.droid.controller.connect.ConnectionState
+import com.jamieadkins.droid.controller.connect.DroidConnectViewModel
+import com.jamieadkins.droid.controller.droid.Droid
+import com.jamieadkins.droid.controller.droid.DroidDao
+import com.jamieadkins.droid.controller.droid.DroidType
+import com.jamieadkins.droid.controller.setup.EnableBluetooth
+import com.jamieadkins.droid.controller.watch.R
+import com.jamieadkins.droid.controller.watch.databinding.FragmentConnectBinding
 import dagger.android.support.DaggerFragment
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class ConnectFragment : DaggerFragment() {
+
+    private val locationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { /* do nothing */ }
+    private val enableBluetooth = registerForActivityResult(EnableBluetooth()) { /* do nothing */ }
 
     private var binding: FragmentConnectBinding? = null
 
     @Inject lateinit var factory: DroidConnectViewModel.Factory
     private lateinit var viewModel: DroidConnectViewModel
 
-    private val droidAdapter = DroidAdapter { viewModel.onDroidSelected(it.address) }
+    @Inject lateinit var droidDao: DroidDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,16 +57,7 @@ class ConnectFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding?.toolbar?.let { (activity as? AppCompatActivity)?.setSupportActionBar(it) }
         binding?.scan?.setOnClickListener { viewModel.scan() }
-        binding?.previousDroids?.apply {
-            adapter = droidAdapter
-            addItemDecoration(VerticalSpaceItemDecoration(8))
-        }
-        binding?.help?.setOnClickListener {
-            requireActivity().startActivity(GetDeviceInfo.getHelpIntent(requireActivity()))
-        }
-        viewModel.previousDroids.observe(viewLifecycleOwner, Observer { droids -> droidAdapter.submitList(droids) })
         viewModel.scanState.observe(viewLifecycleOwner, Observer { state ->
             when (state) {
                 is ConnectionState.Disconnected -> {
@@ -81,14 +75,17 @@ class ConnectFragment : DaggerFragment() {
                     hideLocationPrompt()
                 }
                 is ConnectionState.Naming -> {
-                    val dialog = NameDroidFragment().apply {
-                        arguments = bundleOf("address" to state.address)
-                    }
-                    dialog.show(parentFragmentManager, "name")
-                    disableScanButton()
-                    showScanningIndicator()
-                    hideBluetoothPrompt()
-                    hideLocationPrompt()
+//                    val dialog = NameDroidFragment().apply {
+//                        arguments = bundleOf("address" to state.address)
+//                    }
+//                    dialog.show(parentFragmentManager, "name")
+//                    disableScanButton()
+//                    showScanningIndicator()
+//                    hideBluetoothPrompt()
+//                    hideLocationPrompt()
+
+                    droidDao.insert(Droid(state.address, "DROID", DroidType.RUnit)).subscribeOn(Schedulers.io()).onErrorComplete().subscribe()
+                    viewModel.onDroidNamed(state.address)
                 }
                 is ConnectionState.Connecting,
                 is ConnectionState.ConnectedWithoutHandshake -> {
@@ -117,12 +114,11 @@ class ConnectFragment : DaggerFragment() {
     }
 
     private fun showScanningIndicator() {
-        binding?.animationView?.repeatCount = LottieDrawable.INFINITE
-        binding?.animationView?.resumeAnimation()
+        // Do nothing
     }
 
     private fun hideScanningIndicator() {
-        binding?.animationView?.repeatCount = 0
+        // Do nothing
     }
 
     private fun enableScanButton() {
@@ -134,33 +130,18 @@ class ConnectFragment : DaggerFragment() {
     }
 
     private fun showBluetoothPrompt() {
-        binding?.bluetoothError?.apply {
-            binding.text.setText(R.string.bt_reason)
-            binding.button.setText(R.string.enable)
-            binding.button.setOnClickListener {
-                activity?.startActivity(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
-            }
-            visibility = View.VISIBLE
-        }
+        enableBluetooth.launch(Unit)
     }
 
     private fun hideBluetoothPrompt() {
-        binding?.bluetoothError?.visibility = View.GONE
+        // do nothing.
     }
 
     private fun showLocationPrompt() {
-        binding?.locationError?.apply {
-            binding.text.setText(R.string.location_error)
-            binding.button.setText(R.string.settings)
-            binding.button.setOnClickListener {
-                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply { data = Uri.parse("package:${context.packageName}") }
-                activity?.startActivity(intent)
-            }
-            visibility = View.VISIBLE
-        }
+        locationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
     private fun hideLocationPrompt() {
-        binding?.locationError?.visibility = View.GONE
+        //do nothing.
     }
 }

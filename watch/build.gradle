@@ -13,7 +13,7 @@ if (getGradle().getStartParameter().getTaskRequests().toString().contains("Relea
 android {
     compileSdkVersion Versions.compile_sdk
     defaultConfig {
-        minSdkVersion Versions.min_sdk
+        minSdkVersion 23
         applicationId "com.jamieadkins.droid.controller"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -59,9 +59,12 @@ dependencies {
     implementation Libs.groupie
     implementation Libs.groupie_extensions
     implementation Libs.coil
-    implementation Libs.lottie
     implementation Libs.joystick
     implementation Libs.stateMachine
+
+    implementation 'androidx.wear:wear:1.1.0'
+    implementation 'com.google.android.support:wearable:2.8.1'
+    compileOnly 'com.google.android.wearable:wearable:2.8.1'
 
     implementation project(':core')
 }

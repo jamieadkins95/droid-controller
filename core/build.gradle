@@ -1,30 +1,18 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'androidx.navigation.safeargs'
 apply from: '../test-dependencies.gradle'
-
-if (getGradle().getStartParameter().getTaskRequests().toString().contains("Release")) {
-    // Only add google services plugin to release versions
-    apply plugin: 'com.google.gms.google-services'
-    apply plugin: 'com.google.firebase.crashlytics'
-}
 
 android {
     compileSdkVersion Versions.compile_sdk
     defaultConfig {
         minSdkVersion Versions.min_sdk
-        applicationId "com.jamieadkins.droid.controller"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-    buildFeatures {
-        viewBinding = true
     }
 }
 
@@ -34,19 +22,13 @@ dependencies {
     implementation Libs.androidx_constraint_layout
     implementation Libs.androidx_core
     implementation Libs.androidx_activity
-    implementation Libs.androidx_fragment
     implementation Libs.androidx_viewmodel
     implementation Libs.androidx_livedata
     implementation Libs.material_design
-    implementation Libs.nav_component_fragment
-    implementation Libs.nav_component_ui
 
     implementation Libs.room
     implementation Libs.room_rx
     kapt Libs.room_compiler
-
-    releaseImplementation Libs.firebase_analytics
-    releaseImplementation Libs.firebase_crashlytics
 
     implementation Libs.dagger
     implementation Libs.dagger_support
@@ -59,9 +41,6 @@ dependencies {
     implementation Libs.groupie
     implementation Libs.groupie_extensions
     implementation Libs.coil
-    implementation Libs.lottie
     implementation Libs.joystick
     implementation Libs.stateMachine
-
-    implementation project(':core')
 }

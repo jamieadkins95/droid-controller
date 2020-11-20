@@ -17,7 +17,11 @@ class SetupPresenter @Inject constructor() : SetupContract.Presenter {
     override fun onAttach(newView: SetupContract.View) {
         view = newView
 
-        Observable.combineLatest(locationEnabled, bluetoothEnabled, BiFunction { location: Boolean, bluetooth: Boolean -> SetupState(location, bluetooth) })
+        Observable.combineLatest(locationEnabled, bluetoothEnabled, BiFunction { location: Boolean, bluetooth: Boolean ->
+            SetupState(
+                location, bluetooth
+            )
+        })
             .distinctUntilChanged()
             .subscribe { setup ->
                 if (setup.location && setup.bluetooth) {

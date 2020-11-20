@@ -33,7 +33,6 @@ subprojects {
                 compileSdkVersion Versions.compile_sdk
 
                 defaultConfig {
-                    minSdkVersion Versions.min_sdk
                     targetSdkVersion Versions.target_sdk
                     versionCode Versions.app_version_code
                     versionName Versions.app_version_name

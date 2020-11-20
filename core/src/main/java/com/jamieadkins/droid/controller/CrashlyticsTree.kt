@@ -1,5 +1,6 @@
 package com.jamieadkins.droid.controller
 
+import com.jamieadkins.droid.controller.core.BuildConfig
 import timber.log.Timber
 
 class CrashlyticsTree : Timber.DebugTree() {
