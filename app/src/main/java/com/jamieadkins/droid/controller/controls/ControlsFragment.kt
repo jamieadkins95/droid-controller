@@ -122,7 +122,6 @@ class ControlsFragment : DaggerFragment() {
         joystickInputs.throttleLatest(50, TimeUnit.MILLISECONDS)
             .subscribe {
                 viewModel.sendCommand(DroidAction.MoveWithJoystick(it))
-                Timber.e("JAMIEA $it")
             }
             .addToComposite(compositeDisposable)
 
